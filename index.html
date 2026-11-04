@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>VoltShorts XP | ESE & TGPSC Arena</title>
+  <title>VoltShorts XP | ESE & TGPSC Quiz Arena</title>
 
-  <!-- PWA Manifest & iOS/Android Standalone Meta Tags -->
+  <!-- PWA Manifest & Standalone Mobile App Meta Tags -->
   <link rel="manifest" href="./manifest.json" />
   <meta name="theme-color" content="#090d16" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -13,7 +13,7 @@
   <meta name="apple-mobile-web-app-title" content="VoltShorts XP" />
   <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/2991/2991148.png" />
 
-  <!-- Tailwind CSS + Math.js + Nerdamer Symbolic Calculus Engine -->
+  <!-- Tailwind CSS + Math.js + Nerdamer Symbolic Calculus CAS -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.11.2/math.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/nerdamer@1.1.13/nerdamer.core.js"></script>
@@ -26,15 +26,15 @@
     body {
       background-color: #090d16;
       color: #f8fafc;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
       overflow: hidden;
       height: 100dvh;
       width: 100vw;
       margin: 0;
     }
-    /* YouTube Shorts Vertical Snap Feed */
+    /* YouTube Shorts / Reels Mandatory Vertical Snap Container */
     #shorts-feed {
-      height: calc(100dvh - 60px);
+      height: calc(100dvh - 64px);
       overflow-y: scroll;
       scroll-snap-type: y mandatory;
       scroll-behavior: smooth;
@@ -43,77 +43,192 @@
     }
     #shorts-feed::-webkit-scrollbar { display: none; }
     .short-slide {
-      height: calc(100dvh - 60px);
+      height: calc(100dvh - 64px);
       scroll-snap-align: start;
       scroll-snap-stop: always;
       position: relative;
       display: flex;
       justify-content: center;
       align-items: center;
-      padding: 10px 12px;
+      padding: 12px 14px;
     }
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-    @keyframes pulseGlow {
-      0%, 100% { box-shadow: 0 0 15px rgba(16, 185, 129, 0.35); }
-      50% { box-shadow: 0 0 28px rgba(16, 185, 129, 0.75); }
+    @keyframes pulseEmerald {
+      0%, 100% { box-shadow: 0 0 15px rgba(16, 185, 129, 0.35); transform: scale(1); }
+      50% { box-shadow: 0 0 28px rgba(16, 185, 129, 0.75); transform: scale(1.01); }
     }
-    .done-btn-glow { animation: pulseGlow 1.8s infinite; }
+    .done-btn-glow { animation: pulseEmerald 1.8s infinite; }
   </style>
 </head>
-<body class="flex flex-col select-none">
+<body class="flex flex-col select-none bg-[#090d16] text-slate-100">
 
-  <!-- TOP GAMIFIED HUD & PWA INSTALL BAR -->
-  <header class="h-[60px] w-full bg-slate-950/95 border-b border-slate-800 px-3 flex items-center justify-between z-30 shrink-0">
-    <div class="flex items-center gap-2">
-      <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-600 to-cyan-400 flex items-center justify-center font-black text-slate-950 text-lg shadow">
+  <!-- CONFETTI OVERLAY CANVAS -->
+  <canvas id="confetti-canvas" class="fixed inset-0 pointer-events-none z-50"></canvas>
+
+  <!-- TOP GAMIFIED HUD HEADER -->
+  <header class="h-[64px] w-full bg-slate-950/95 backdrop-blur-md border-b border-slate-800/90 px-3 sm:px-5 flex items-center justify-between z-30 shrink-0">
+    <!-- Left: Mobile Sidebar Toggle + Brand + Level & XP Bar -->
+    <div class="flex items-center gap-2.5">
+      <button onclick="toggleMobileSidebar()" class="lg:hidden bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-200 p-2 rounded-xl text-xs">
+        ☰
+      </button>
+      <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-600 via-indigo-500 to-cyan-400 flex items-center justify-center font-black text-slate-950 text-lg shadow-lg shadow-blue-500/20">
         ⚡
       </div>
       <div>
         <div class="flex items-center gap-1.5">
-          <span class="font-extrabold text-sm tracking-tight text-white">VoltShorts</span>
-          <span id="level-badge" class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/40">LVL 1</span>
+          <span class="font-extrabold text-sm sm:text-base tracking-tight bg-gradient-to-r from-white via-blue-200 to-cyan-300 bg-clip-text text-transparent">
+            VoltShorts XP
+          </span>
+          <span id="level-badge" class="text-[10px] font-black px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/40">
+            LVL 1
+          </span>
         </div>
-        <div class="flex items-center gap-2 text-[11px] text-slate-400">
-          <span>XP: <strong id="xp-count" class="text-cyan-400">0</strong></span>
-          <span>•</span>
-          <span>🔥 <strong id="streak-count" class="text-orange-400">0</strong></span>
-          <span>•</span>
-          <span>Net: <strong id="net-score" class="text-emerald-400">0.00</strong></span>
+        <!-- XP Progress Bar -->
+        <div class="flex items-center gap-2 mt-0.5">
+          <div class="w-20 sm:w-28 h-1.5 bg-slate-800 rounded-full overflow-hidden">
+            <div id="xp-bar" class="h-full bg-gradient-to-r from-blue-500 to-cyan-400 transition-all duration-300" style="width: 0%"></div>
+          </div>
+          <span class="text-[10px] text-cyan-400 font-bold"><span id="xp-count">0</span> XP</span>
         </div>
       </div>
     </div>
 
-    <!-- Filter & Install Controls -->
-    <div class="flex items-center gap-1.5">
-      <select id="exam-filter" onchange="applyFilters()" class="bg-slate-900 text-[11px] text-slate-200 border border-slate-700 rounded-lg px-2 py-1.5">
-        <option value="ALL">All (60)</option>
-        <option value="UPSC ESE">ESE Paper-I</option>
-        <option value="TGPSC">TGPSC</option>
-        <option value="EE Bonus">EE Core</option>
-        <option value="BOOKMARKED">★ Saved</option>
-      </select>
+    <!-- Center/Right Live Stats & Action Buttons -->
+    <div class="flex items-center gap-1.5 sm:gap-2">
+      <div class="hidden sm:flex items-center gap-1.5 bg-slate-900/90 border border-slate-800 px-2.5 py-1 rounded-xl text-xs">
+        <span>🔥 Streak:</span>
+        <strong id="streak-count" class="text-orange-400">0</strong>
+      </div>
 
-      <button onclick="openCalcDrawer()" class="bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold px-2.5 py-1.5 rounded-lg border border-indigo-400/40 flex items-center gap-1 shadow">
-        <span>🧮</span><span class="hidden sm:inline">Solver</span>
+      <div class="bg-slate-900/90 border border-slate-800 px-2.5 py-1 rounded-xl text-center">
+        <div class="text-[9px] text-slate-400 uppercase tracking-wider">Net (-1/3)</div>
+        <div id="net-score" class="text-xs font-extrabold text-emerald-400">0.00</div>
+      </div>
+
+      <button onclick="openCalcDrawer()" class="bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold px-2.5 sm:px-3 py-2 rounded-xl border border-indigo-400/40 flex items-center gap-1 shadow-lg shadow-indigo-600/20 transition">
+        <span>🧮</span>
+        <span class="hidden md:inline">Smart Solver</span>
       </button>
 
-      <!-- Native PWA Install Button (Appears automatically when installable) -->
-      <button id="pwa-install-btn" onclick="triggerPWAInstall()" class="hidden bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold px-2.5 py-1.5 rounded-lg shadow">
-        📲 Install App
+      <!-- Always-Visible Install App Button -->
+      <button id="pwa-install-btn" onclick="handleInstallClick()" class="bg-gradient-to-r from-emerald-600 to-teal-500 hover:from-emerald-500 hover:to-teal-400 text-slate-950 text-xs font-black px-2.5 sm:px-3 py-2 rounded-xl shadow-lg shadow-emerald-500/20 flex items-center gap-1 transition">
+        <span>📲</span>
+        <span>Install App</span>
       </button>
 
-      <!-- Export JSON DB for GitHub -->
-      <button onclick="downloadQuestionsJSON()" title="Download questions.json for GitHub" class="bg-slate-800 hover:bg-slate-700 text-slate-200 text-[11px] font-semibold px-2 py-1.5 rounded-lg border border-slate-700">
-        📥 JSON
+      <button id="sound-btn" onclick="toggleSound()" title="Toggle Arcade Audio" class="bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-200 p-2 rounded-xl text-xs">
+        🔊
       </button>
     </div>
   </header>
 
-  <!-- YOUTUBE SHORTS SNAP FEED -->
-  <main id="shorts-feed" class="w-full"></main>
+  <!-- MAIN WORKSPACE: LEFT SIDEBAR + CENTER YOUTUBE SHORTS FEED -->
+  <div class="flex-1 flex overflow-hidden relative">
 
-  <!-- SLIDE-UP ON-SCREEN SMART CALCULATOR, INTEGRATOR & SCRATCHPAD DRAWER -->
+    <!-- LEFT SIDEBAR (Desktop Fixed + Mobile Slide-Over Drawer) -->
+    <aside id="left-sidebar" class="fixed lg:static inset-y-0 left-0 z-40 w-72 bg-slate-950/95 border-r border-slate-800/90 p-4 flex flex-col justify-between transform -translate-x-full lg:translate-x-0 transition-transform duration-200 overflow-y-auto no-scrollbar">
+      <div class="flex flex-col gap-4">
+        <!-- Mobile Close Header -->
+        <div class="flex items-center justify-between lg:hidden pb-2 border-b border-slate-800">
+          <span class="font-bold text-sm text-cyan-400">⚡ Arena Controls & DB</span>
+          <button onclick="toggleMobileSidebar()" class="text-slate-400 hover:text-white text-xs px-2 py-1 rounded bg-slate-800">✕ Close</button>
+        </div>
+
+        <!-- Exam Track Filter -->
+        <div>
+          <label class="text-[11px] font-bold uppercase tracking-wider text-slate-400 block mb-1.5">1. Target Exam Filter</label>
+          <select id="exam-filter" onchange="applyFilters()" class="w-full bg-slate-900 text-xs text-slate-100 border border-slate-700 rounded-xl px-3 py-2 focus:outline-none focus:border-blue-500">
+            <option value="ALL">All Exams (60 Questions)</option>
+            <option value="UPSC ESE">UPSC ESE Paper-I (Non-Tech)</option>
+            <option value="TGPSC">TGPSC AEE / AE / Groups</option>
+            <option value="EE Bonus">Core Electrical Engineering</option>
+            <option value="BOOKMARKED">★ Bookmarked Shorts Only</option>
+          </select>
+        </div>
+
+        <!-- Subject Filter -->
+        <div>
+          <label class="text-[11px] font-bold uppercase tracking-wider text-slate-400 block mb-1.5">2. Subject Module</label>
+          <select id="subject-filter" onchange="applyFilters()" class="w-full bg-slate-900 text-xs text-slate-100 border border-slate-700 rounded-xl px-3 py-2 focus:outline-none focus:border-blue-500">
+            <option value="ALL">All 11 Modules</option>
+            <option value="Engineering Maths">Engineering Maths & Prob.</option>
+            <option value="Project Management">Project Mgmt (PERT/CPM)</option>
+            <option value="Quality & Design">Quality, Six Sigma & Safety</option>
+            <option value="Engineering Ethics">Engineering Ethics & Values</option>
+            <option value="ICT & Current Affairs">ICT & National Initiatives</option>
+            <option value="Environment & Disaster">Ecology, Climate & Disasters</option>
+            <option value="Telangana Special">Telangana History, Movement & Power</option>
+            <option value="Polity, Economy & History">Indian Polity, Economy & History</option>
+            <option value="Science & Hydrology">General Science & Hydrology</option>
+            <option value="Aptitude & English">Reasoning & Functional English</option>
+            <option value="Electrical Core">Electrical Core Rapid Revision</option>
+          </select>
+        </div>
+
+        <!-- Arena Progress Card -->
+        <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-3 flex flex-col gap-2">
+          <div class="flex items-center justify-between text-xs">
+            <span class="text-slate-400">Solved Shorts</span>
+            <strong id="solved-progress" class="text-white">0 / 60</strong>
+          </div>
+          <div class="flex items-center justify-between text-xs">
+            <span class="text-slate-400">Accuracy</span>
+            <strong id="accuracy-rate" class="text-cyan-400">0%</strong>
+          </div>
+          <div class="flex items-center justify-between text-xs">
+            <span class="text-slate-400">Saved Bookmarks</span>
+            <strong id="bookmark-count" class="text-amber-400">0</strong>
+          </div>
+          <div class="grid grid-cols-2 gap-1.5 mt-1">
+            <button onclick="shuffleFeed()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold py-1.5 rounded-xl border border-slate-700">
+              🔀 Shuffle
+            </button>
+            <button onclick="resetArenaProgress()" class="bg-slate-800 hover:bg-rose-950 text-rose-400 text-xs font-semibold py-1.5 rounded-xl border border-slate-700">
+              ↺ Reset
+            </button>
+          </div>
+        </div>
+
+        <!-- GitHub JSON Database & PWA App Hub -->
+        <div class="bg-slate-900/90 border border-blue-500/30 rounded-2xl p-3 flex flex-col gap-2">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold text-blue-300">GitHub JSON DB & PWA</span>
+            <span id="db-source-badge" class="text-[10px] px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+              60 Qs Ready
+            </span>
+          </div>
+          <p class="text-[11px] text-slate-400 leading-relaxed">
+            Auto-fetches <code class="text-cyan-300">./questions.json</code> on GitHub Pages. Export files below to update your repo or install offline:
+          </p>
+          <button onclick="openAddQuestionModal()" class="w-full bg-blue-600/20 hover:bg-blue-600/30 text-blue-300 border border-blue-500/40 text-xs font-bold py-2 rounded-xl transition">
+            + Add New Question to JSON DB
+          </button>
+          <button onclick="downloadQuestionsJSON()" class="w-full bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold py-2 rounded-xl shadow transition">
+            📥 Download questions.json
+          </button>
+          <div class="grid grid-cols-2 gap-1.5 pt-1">
+            <button onclick="downloadManifestFile()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 text-[11px] font-semibold py-1.5 rounded-xl border border-slate-700">
+              📥 manifest.json
+            </button>
+            <button onclick="downloadSWFile()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 text-[11px] font-semibold py-1.5 rounded-xl border border-slate-700">
+              📥 sw.js
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="pt-4 text-[11px] text-slate-500 text-center">
+        Use ↑/↓ keys, mouse wheel, or thumb swipe
+      </div>
+    </aside>
+
+    <!-- CENTER YOUTUBE SHORTS VERTICAL SNAP FEED -->
+    <main id="shorts-feed" class="flex-1 w-full relative"></main>
+  </div>
+
+  <!-- SLIDE-UP ON-SCREEN SMART CALCULATOR, SYMBOLIC INTEGRATOR & SCRATCHPAD DRAWER -->
   <div id="calc-drawer" class="fixed inset-0 z-50 hidden bg-black/75 backdrop-blur-sm flex items-end justify-center">
     <div class="w-full max-w-xl bg-slate-900 border-t-2 border-indigo-500 rounded-t-3xl p-4 max-h-[88dvh] flex flex-col gap-3 shadow-2xl overflow-y-auto">
       <!-- Drawer Header -->
@@ -121,46 +236,46 @@
         <div class="flex items-center gap-2">
           <span class="text-lg">🧠</span>
           <div>
-            <h3 class="text-sm font-bold text-white">Timepass Smart Solver & Symbolic Integrator</h3>
-            <p class="text-[11px] text-slate-400">No pen or calculator needed — type, tap, or speak</p>
+            <h3 class="text-sm font-bold text-white">On-Screen Smart Solver & Symbolic Integrator</h3>
+            <p class="text-[11px] text-slate-400">Built for hands-free timepass — integrates, calculates & maps seating</p>
           </div>
         </div>
-        <div class="flex items-center gap-2">
+        <div class="flex items-center gap-1.5">
           <button onclick="autoSolveCurrentQuestion()" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold px-3 py-1.5 rounded-xl shadow">
-            ⚡ Auto-Solve Current Q
+            ⚡ Auto-Solve Q
           </button>
           <button onclick="closeCalcDrawer()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold px-3 py-1.5 rounded-xl">
-            ✕ Close
+            ✕
           </button>
         </div>
       </div>
 
-      <!-- Solver Mode Tabs -->
+      <!-- 4 Mode Tabs -->
       <div class="grid grid-cols-4 gap-1.5 bg-slate-950 p-1 rounded-xl border border-slate-800 text-[11px] font-bold">
-        <button onclick="switchCalcTab('cmd')" id="tab-btn-cmd" class="py-1.5 rounded-lg bg-indigo-600 text-white">1. Command</button>
-        <button onclick="switchCalcTab('exam')" id="tab-btn-exam" class="py-1.5 rounded-lg text-slate-400 hover:text-white">2. Calculus/PERT</button>
+        <button onclick="switchCalcTab('cmd')" id="tab-btn-cmd" class="py-1.5 rounded-lg bg-indigo-600 text-white">1. Ask / Cmd</button>
+        <button onclick="switchCalcTab('exam')" id="tab-btn-exam" class="py-1.5 rounded-lg text-slate-400 hover:text-white">2. ∫ / PERT / Bayes</button>
         <button onclick="switchCalcTab('sci')" id="tab-btn-sci" class="py-1.5 rounded-lg text-slate-400 hover:text-white">3. Keypad</button>
         <button onclick="switchCalcTab('pad')" id="tab-btn-pad" class="py-1.5 rounded-lg text-slate-400 hover:text-white">4. Scratchpad</button>
       </div>
 
-      <!-- TAB 1: NATURAL LANGUAGE / VOICE MATH COMMAND BAR -->
+      <!-- TAB 1: VOICE & NATURAL LANGUAGE COMMAND BAR -->
       <div id="calc-tab-cmd" class="flex flex-col gap-2.5">
         <div class="flex gap-1.5">
           <input id="nl-input" type="text" placeholder="e.g. integrate 6*(1-y) wrt y from x to 1"
             onkeydown="if(event.key==='Enter') runNaturalCommand()"
             class="flex-1 bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-indigo-500" />
-          <button onclick="startVoiceCommand()" title="Speak Math Command" class="bg-slate-800 hover:bg-slate-700 text-amber-400 px-3 py-2 rounded-xl border border-slate-700 text-sm">
+          <button onclick="startVoiceCommand()" title="Voice Math Command" class="bg-slate-800 hover:bg-slate-700 text-amber-400 px-3 py-2 rounded-xl border border-slate-700 text-sm">
             🎙️
           </button>
           <button onclick="runNaturalCommand()" class="bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs px-3.5 py-2 rounded-xl">
-            Solve
+            Run
           </button>
         </div>
 
-        <!-- Preset 1-Tap Chips -->
+        <!-- 1-Tap Preset Chips -->
         <div class="flex gap-1.5 overflow-x-auto no-scrollbar pb-1 text-[11px]">
           <button onclick="setAndRunCmd('integrate 6*(1-y) wrt y from x to 1')" class="shrink-0 bg-slate-800 hover:bg-slate-700 text-cyan-300 px-2.5 py-1 rounded-lg border border-slate-700">
-            ∫ Q3 Marginal Density
+            ∫ Q3 Marginal PDF
           </button>
           <button onclick="setAndRunCmd('bayes 0.001 0.999 0.002')" class="shrink-0 bg-slate-800 hover:bg-slate-700 text-emerald-300 px-2.5 py-1 rounded-lg border border-slate-700">
             🎲 Q2 Bayes Screening
@@ -173,29 +288,27 @@
           </button>
         </div>
 
-        <div id="nl-output" class="bg-slate-950 border border-slate-800 rounded-xl p-3 text-xs font-mono text-emerald-300 min-h-[90px] whitespace-pre-wrap leading-relaxed">Tap "⚡ Auto-Solve Current Q" or click a preset chip above to see step-by-step symbolic execution.</div>
+        <div id="nl-output" class="bg-slate-950 border border-slate-800 rounded-xl p-3 text-xs font-mono text-emerald-300 min-h-[100px] whitespace-pre-wrap leading-relaxed">Tap "⚡ Auto-Solve Q" or any chip above to execute symbolic integration, Bayes' theorem, PERT probability, or word coding automatically.</div>
       </div>
 
-      <!-- TAB 2: DEDICATED SYMBOLIC INTEGRAL, PERT & BAYES BOXES -->
+      <!-- TAB 2: DEDICATED SYMBOLIC INTEGRAL, PERT & BAYES SOLVERS -->
       <div id="calc-tab-exam" class="hidden flex-col gap-3">
-        <!-- Symbolic Calculus Box -->
         <div class="bg-slate-950 border border-slate-800 rounded-xl p-3 flex flex-col gap-2">
           <div class="text-xs font-bold text-cyan-400">∫ Symbolic Definite / Indefinite Integrator & Derivative</div>
           <div class="grid grid-cols-4 gap-1.5 text-xs">
             <input id="sym-expr" type="text" value="6*(1-y)" placeholder="Expression f(x,y)" class="col-span-2 bg-slate-900 border border-slate-700 rounded-lg px-2 py-1.5 text-white" />
             <input id="sym-var" type="text" value="y" placeholder="Var (x/y)" class="bg-slate-900 border border-slate-700 rounded-lg px-2 py-1.5 text-white" />
             <button onclick="runSymbolicBox('diff')" class="bg-slate-800 hover:bg-slate-700 text-amber-300 rounded-lg font-bold">d/d(var)</button>
-            <input id="sym-low" type="text" value="x" placeholder="Lower limit (optional)" class="col-span-2 bg-slate-900 border border-slate-700 rounded-lg px-2 py-1.5 text-white" />
-            <input id="sym-high" type="text" value="1" placeholder="Upper limit (optional)" class="bg-slate-900 border border-slate-700 rounded-lg px-2 py-1.5 text-white" />
+            <input id="sym-low" type="text" value="x" placeholder="Lower limit" class="col-span-2 bg-slate-900 border border-slate-700 rounded-lg px-2 py-1.5 text-white" />
+            <input id="sym-high" type="text" value="1" placeholder="Upper limit" class="bg-slate-900 border border-slate-700 rounded-lg px-2 py-1.5 text-white" />
             <button onclick="runSymbolicBox('int')" class="bg-cyan-600 hover:bg-cyan-500 text-white rounded-lg font-bold">∫ Integrate</button>
           </div>
-          <div id="sym-result" class="text-xs font-mono text-emerald-300 bg-slate-900/70 p-2 rounded-lg">Result will appear here...</div>
+          <div id="sym-result" class="text-xs font-mono text-emerald-300 bg-slate-900/70 p-2 rounded-lg">Ready for symbolic calculus...</div>
         </div>
 
-        <!-- PERT & Bayes Quick Row -->
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
           <div class="bg-slate-950 border border-slate-800 rounded-xl p-2.5 flex flex-col gap-1.5">
-            <div class="text-xs font-bold text-amber-400">PERT 3-Time Solver</div>
+            <div class="text-xs font-bold text-amber-400">PERT 3-Time Network Solver</div>
             <div class="grid grid-cols-4 gap-1 text-[11px]">
               <input id="pert-to" type="number" value="9" placeholder="to" class="bg-slate-900 border border-slate-700 rounded px-1.5 py-1 text-white" />
               <input id="pert-tm" type="number" value="15" placeholder="tm" class="bg-slate-900 border border-slate-700 rounded px-1.5 py-1 text-white" />
@@ -219,7 +332,7 @@
         </div>
       </div>
 
-      <!-- TAB 3: SCIENTIFIC TOUCH KEYPAD -->
+      <!-- TAB 3: TOUCH SCIENTIFIC KEYPAD -->
       <div id="calc-tab-sci" class="hidden flex-col gap-2">
         <input id="sci-display" type="text" placeholder="0" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-right font-mono text-sm text-emerald-300" />
         <div class="grid grid-cols-5 gap-1.5 text-xs font-bold">
@@ -254,11 +367,11 @@
         </div>
       </div>
 
-      <!-- TAB 4: THUMB SCRATCHPAD + 5-SEAT NORTH ROW ARENA -->
+      <!-- TAB 4: THUMB SCRATCHPAD + 5-SEAT NORTH ROW BOARD -->
       <div id="calc-tab-pad" class="hidden flex-col gap-2.5">
         <div class="bg-slate-950 border border-slate-800 rounded-xl p-2.5">
           <div class="flex items-center justify-between mb-1.5">
-            <span class="text-[11px] font-bold text-amber-300">🪑 5-Seat North-Facing Row Helper (Tap Slot to Cycle Person)</span>
+            <span class="text-[11px] font-bold text-amber-300">🪑 5-Seat North Row Helper (Tap Slot to Cycle Name)</span>
             <button onclick="resetSeatingRow()" class="text-[10px] text-slate-400 underline">Reset Row</button>
           </div>
           <div id="seating-slots" class="grid grid-cols-5 gap-1.5 text-center text-xs font-bold"></div>
@@ -274,9 +387,84 @@
     </div>
   </div>
 
+  <!-- MODAL 1: INSTALL APP & OFFLINE PWA PACKAGE MANAGER -->
+  <div id="install-modal" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="w-full max-w-md bg-slate-900 border border-emerald-500/40 rounded-3xl p-5 flex flex-col gap-3.5 shadow-2xl">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-2.5">
+        <div class="flex items-center gap-2">
+          <span class="text-xl">📲</span>
+          <h3 class="text-sm font-extrabold text-white">Install VoltShorts XP App (100% Free)</h3>
+        </div>
+        <button onclick="closeInstallModal()" class="text-slate-400 hover:text-white text-xs bg-slate-800 px-2.5 py-1 rounded-lg">✕</button>
+      </div>
+
+      <div class="text-xs text-slate-300 space-y-2 leading-relaxed">
+        <p class="bg-emerald-950/60 border border-emerald-500/30 text-emerald-200 p-2.5 rounded-xl">
+          <strong>Direct Install on Phone / Laptop:</strong> Once hosted on GitHub Pages with <code class="text-white">manifest.json</code> and <code class="text-white">sw.js</code>, tapping <strong>Install App</strong> installs VoltShorts XP onto your home screen with <strong>100% offline support</strong> and zero browser bars.
+        </p>
+        <ul class="list-disc pl-4 space-y-1 text-slate-300">
+          <li><strong>Android (Chrome / Brave):</strong> Tap browser menu (⋮) → <strong>Install app</strong>.</li>
+          <li><strong>iPhone / iPad (Safari):</strong> Tap <strong>Share</strong> → <strong>Add to Home Screen</strong>.</li>
+          <li><strong>Native Android .APK:</strong> Paste your GitHub Pages URL into <span class="text-cyan-300 font-semibold">pwabuilder.com</span> to download a standalone <code class="text-white">.apk</code>.</li>
+        </ul>
+      </div>
+
+      <div class="bg-slate-950 border border-slate-800 rounded-2xl p-3 flex flex-col gap-2">
+        <span class="text-[11px] font-bold text-slate-400 uppercase">Download Required GitHub Repo Files:</span>
+        <div class="grid grid-cols-3 gap-1.5">
+          <button onclick="downloadManifestFile()" class="bg-slate-800 hover:bg-slate-700 text-cyan-300 text-xs font-bold py-2 rounded-xl border border-slate-700">
+            manifest.json
+          </button>
+          <button onclick="downloadSWFile()" class="bg-slate-800 hover:bg-slate-700 text-amber-300 text-xs font-bold py-2 rounded-xl border border-slate-700">
+            sw.js
+          </button>
+          <button onclick="downloadQuestionsJSON()" class="bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold py-2 rounded-xl">
+            questions.json
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL 2: ADD NEW QUESTION TO JSON DB -->
+  <div id="add-q-modal" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="w-full max-w-md bg-slate-900 border border-blue-500/40 rounded-3xl p-5 flex flex-col gap-3 shadow-2xl max-h-[90dvh] overflow-y-auto">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-2">
+        <h3 class="text-sm font-extrabold text-white">+ Add Question to questions.json</h3>
+        <button onclick="closeAddQuestionModal()" class="text-slate-400 hover:text-white text-xs bg-slate-800 px-2.5 py-1 rounded-lg">✕</button>
+      </div>
+      <div class="grid grid-cols-2 gap-2 text-xs">
+        <select id="new-q-exam" class="bg-slate-950 border border-slate-700 rounded-xl px-2.5 py-2 text-white">
+          <option value="UPSC ESE">UPSC ESE</option>
+          <option value="TGPSC">TGPSC</option>
+          <option value="EE Bonus">EE Bonus</option>
+        </select>
+        <input id="new-q-subj" type="text" placeholder="Subject (e.g. Engineering Ethics)" class="bg-slate-950 border border-slate-700 rounded-xl px-2.5 py-2 text-white" />
+      </div>
+      <textarea id="new-q-text" rows="2" placeholder="Enter Question Prompt..." class="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-xs text-white"></textarea>
+      <div class="grid grid-cols-2 gap-2 text-xs">
+        <input id="new-q-opt0" type="text" placeholder="Option A" class="bg-slate-950 border border-slate-700 rounded-xl px-2.5 py-1.5 text-white" />
+        <input id="new-q-opt1" type="text" placeholder="Option B" class="bg-slate-950 border border-slate-700 rounded-xl px-2.5 py-1.5 text-white" />
+        <input id="new-q-opt2" type="text" placeholder="Option C" class="bg-slate-950 border border-slate-700 rounded-xl px-2.5 py-1.5 text-white" />
+        <input id="new-q-opt3" type="text" placeholder="Option D" class="bg-slate-950 border border-slate-700 rounded-xl px-2.5 py-1.5 text-white" />
+      </div>
+      <select id="new-q-ans" class="bg-slate-950 border border-slate-700 rounded-xl px-2.5 py-2 text-xs text-emerald-300 font-bold">
+        <option value="0">Correct Option: A</option>
+        <option value="1">Correct Option: B</option>
+        <option value="2">Correct Option: C</option>
+        <option value="3">Correct Option: D</option>
+      </select>
+      <textarea id="new-q-exp" rows="2" placeholder="Detailed Analytical Explanation..." class="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-xs text-white"></textarea>
+      <input id="new-q-tip" type="text" placeholder="🎯 Exam Smart Tip / Memory Hook (optional)" class="bg-slate-950 border border-slate-700 rounded-xl px-2.5 py-2 text-xs text-white" />
+      <button onclick="saveNewQuestionToDB()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-black text-xs py-2.5 rounded-xl shadow">
+        Save to Arena & Download Updated questions.json
+      </button>
+    </div>
+  </div>
+
   <script>
     // =========================================================================
-    // 1. REGISTER PWA SERVICE WORKER & NATIVE "INSTALL APP" PROMPT
+    // 1. PWA SERVICE WORKER, INSTALL HANDLER & 1-CLICK FILE GENERATORS
     // =========================================================================
     let deferredInstallPrompt = null;
 
@@ -289,20 +477,110 @@
     window.addEventListener("beforeinstallprompt", (e) => {
       e.preventDefault();
       deferredInstallPrompt = e;
-      const btn = document.getElementById("pwa-install-btn");
-      if (btn) btn.classList.remove("hidden");
     });
 
-    async function triggerPWAInstall() {
-      if (!deferredInstallPrompt) return;
-      deferredInstallPrompt.prompt();
-      await deferredInstallPrompt.userChoice;
-      deferredInstallPrompt = null;
-      document.getElementById("pwa-install-btn").classList.add("hidden");
+    async function handleInstallClick() {
+      if (deferredInstallPrompt) {
+        deferredInstallPrompt.prompt();
+        await deferredInstallPrompt.userChoice;
+        deferredInstallPrompt = null;
+      } else {
+        document.getElementById("install-modal").classList.remove("hidden");
+      }
+    }
+
+    function closeInstallModal() {
+      document.getElementById("install-modal").classList.add("hidden");
+    }
+
+    function downloadManifestFile() {
+      const manifestObj = {
+        name: "VoltShorts XP: ESE & TGPSC Quiz Arena",
+        short_name: "VoltShorts XP",
+        description: "Gamified UPSC ESE & TGPSC Shorts Quiz with Symbolic Calculus & Smart Solvers",
+        start_url: "./index.html",
+        scope: "./",
+        display: "standalone",
+        orientation: "portrait",
+        background_color: "#090d16",
+        theme_color: "#090d16",
+        icons: [
+          {
+            src: "https://cdn-icons-png.flaticon.com/512/2991/2991148.png",
+            sizes: "192x192",
+            type: "image/png",
+            purpose: "any maskable"
+          },
+          {
+            src: "https://cdn-icons-png.flaticon.com/512/2991/2991148.png",
+            sizes: "512x512",
+            type: "image/png",
+            purpose: "any maskable"
+          }
+        ]
+      };
+      triggerFileDownload("manifest.json", JSON.stringify(manifestObj, null, 2), "application/json");
+    }
+
+    function downloadSWFile() {
+      const swCode = `const CACHE_NAME = "voltshorts-xp-v2";
+const ASSETS_TO_CACHE = [
+  "./",
+  "./index.html",
+  "./questions.json",
+  "./manifest.json",
+  "https://cdn.tailwindcss.com",
+  "https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.11.2/math.js",
+  "https://cdn.jsdelivr.net/npm/nerdamer@1.1.13/nerdamer.core.js",
+  "https://cdn.jsdelivr.net/npm/nerdamer@1.1.13/Algebra.js",
+  "https://cdn.jsdelivr.net/npm/nerdamer@1.1.13/Calculus.js",
+  "https://cdn.jsdelivr.net/npm/nerdamer@1.1.13/Solve.js"
+];
+
+self.addEventListener("install", (event) => {
+  event.waitUntil(caches.open(CACHE_NAME).then((cache) => cache.addAll(ASSETS_TO_CACHE)));
+  self.skipWaiting();
+});
+
+self.addEventListener("activate", (event) => {
+  event.waitUntil(
+    caches.keys().then((keys) => Promise.all(keys.map((k) => (k !== CACHE_NAME ? caches.delete(k) : null))))
+  );
+  self.clients.claim();
+});
+
+self.addEventListener("fetch", (event) => {
+  if (event.request.url.includes("questions.json")) {
+    event.respondWith(
+      fetch(event.request)
+        .then((res) => {
+          const clone = res.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone));
+          return res;
+        })
+        .catch(() => caches.match(event.request))
+    );
+  } else {
+    event.respondWith(caches.match(event.request).then((cached) => cached || fetch(event.request)));
+  }
+});`;
+      triggerFileDownload("sw.js", swCode, "application/javascript");
+    }
+
+    function triggerFileDownload(filename, content, mime) {
+      const blob = new Blob([content], { type: mime });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
     }
 
     // =========================================================================
-    // 2. COMPLETE 60-QUESTION FALLBACK DATABASE (AUTO-SYNCS WITH questions.json)
+    // 2. COMPLETE 60-QUESTION DATABASE WITH SMART TIPS & SOLVER COMMANDS
     // =========================================================================
     const FALLBACK_QUESTIONS_DB = [
       {
@@ -313,8 +591,9 @@
         question: "The probability density function of an exponential distribution is f(x) = λe^(-λx) for x ≥ 0 (and 0 for x < 0). What is the standard deviation of this distribution?",
         options: ["1 / λ", "1 / λ²", "2 / λ", "3 / λ²"],
         answerIndex: 0,
-        explanation: "For an exponential distribution f(x) = λe^(-λx), the mean is E[X] = 1/λ and variance is Var(X) = 1/λ². Taking the square root gives standard deviation σ = 1/λ. Trap alert: 1/λ² is the variance, whereas 1/λ is both the mean and the standard deviation!",
-        smartCmd: "mean = 1/λ, variance = 1/λ^2, std_dev = sqrt(1/λ^2) = 1/λ"
+        explanation: "For an exponential distribution f(x) = λe^(-λx), the k-th raw moment is E[X^k] = k! / λ^k. Thus, the mean is E[X] = 1/λ and E[X²] = 2/λ². Variance is Var(X) = 2/λ² - (1/λ)² = 1/λ². Taking the square root gives standard deviation σ = 1/λ.",
+        smartTip: "Memory Hook: For an Exponential Distribution, Mean = Standard Deviation = 1/λ (whereas Variance = 1/λ²).",
+        smartCmd: "integrate x * lambda * e^(-lambda*x) -> Mean = 1/lambda, Variance = 1/lambda^2, StdDev = 1/lambda"
       },
       {
         id: 2,
@@ -325,6 +604,7 @@
         options: ["1 / 3", "1 / 4", "2 / 3", "5 / 6"],
         answerIndex: 0,
         explanation: "By Bayes' Theorem: P(D|+) = (0.001 × 0.999) / [(0.001 × 0.999) + (0.999 × 0.002)]. Canceling 0.999 from numerator and denominator gives 0.001 / (0.001 + 0.002) = 1/3 (33.3%).",
+        smartTip: "Cancel common factors first! 0.999 cancels out top and bottom immediately: 0.001 / (0.001 + 0.002) = 1/3.",
         smartCmd: "bayes 0.001 0.999 0.002"
       },
       {
@@ -340,7 +620,8 @@
           "6(1/2 - x + x²/2)"
         ],
         answerIndex: 3,
-        explanation: "Integrating c(1 - y) over 0 ≤ x ≤ y ≤ 1 yields c/6 = 1 → c = 6. Then marginal density f_X(x) = ∫[y=x to 1] 6(1 - y) dy = 6[y - y²/2]_x^1 = 6(1/2 - x + x²/2).",
+        explanation: "Step 1: Integrating c(1 - y) over 0 ≤ x ≤ y ≤ 1 gives c/6 = 1 → c = 6. Step 2: Marginal density f_X(x) integrates y from x to 1: ∫ 6(1 - y) dy = 6[y - y²/2]_x^1 = 6(1/2 - x + x²/2).",
+        smartTip: "Sign Check: Substituting lower limit y = x into -(y²/2) flips the sign to +x²/2!",
         smartCmd: "integrate 6*(1-y) wrt y from x to 1"
       },
       {
@@ -356,7 +637,8 @@
           "PERT uses the slack concept, while CPM uses the float concept."
         ],
         answerIndex: 2,
-        explanation: "PERT is an event-oriented network model (probabilistic 3-time estimate), whereas CPM is an activity-oriented network model (deterministic 1-time estimate). Claiming both are event-oriented is incorrect."
+        explanation: "PERT is an event-oriented network model (probabilistic 3-time estimate), whereas CPM is an activity-oriented network model (deterministic 1-time estimate). Claiming both are event-oriented is false.",
+        smartTip: "PERT = Event-oriented + Slack + Beta Distribution. CPM = Activity-oriented + Float + Project Crashing."
       },
       {
         id: 5,
@@ -371,7 +653,8 @@
           "PERT is a deterministic approach where project crashing is standard."
         ],
         answerIndex: 1,
-        explanation: "PERT was developed for novel R&D projects (like the Polaris missile program) where high levels of uncertainty exist, modeling activity times with a Beta (β) distribution."
+        explanation: "Developed by the U.S. Navy for the Polaris missile program, PERT is designed for novel R&D projects where high levels of uncertainty exist.",
+        smartTip: "High uncertainty R&D = PERT; Repetitive construction = CPM."
       },
       {
         id: 6,
@@ -386,7 +669,8 @@
           "Project crashing is possible in PERT but impossible in CPM."
         ],
         answerIndex: 2,
-        explanation: "PERT statistically evaluates project duration over a time-sensitive domain using three time estimates (to, tm, tp). Project crashing (time-cost trade-off) is performed in CPM."
+        explanation: "PERT statistically evaluates project duration over a time-sensitive domain using three time estimates (to, tm, tp). Project crashing (time-cost trade-off) belongs to CPM.",
+        smartTip: "Statistical time-domain evaluation = PERT."
       },
       {
         id: 7,
@@ -396,7 +680,8 @@
         question: "Consider the following statements: (1) In Work Breakdown Structure (WBS), a top-down approach is adopted. (2) Duration along the critical path is the shortest duration permissible to complete the project. (3) If an activity has zero slack, it lies on the critical path. Which are correct?",
         options: ["1 and 2 only", "2 and 3 only", "1 and 3 only", "1, 2, and 3"],
         answerIndex: 3,
-        explanation: "All three statements are correct. WBS decomposes projects top-down. The critical path is the longest path in the network diagram, which defines the shortest possible time to complete the entire project, with zero slack."
+        explanation: "All three statements are correct. WBS decomposes projects top-down. The critical path is the longest path in the network diagram, which defines the shortest permissible time to complete the entire project, with zero slack.",
+        smartTip: "Critical Path Paradox: Longest path in network graph = Shortest time to complete the whole project."
       },
       {
         id: 8,
@@ -407,6 +692,7 @@
         options: ["16%", "50%", "68%", "84%"],
         answerIndex: 0,
         explanation: "Expected time te = (9 + 4×15 + 21)/6 = 15 days. Standard deviation σ = (21 - 9)/6 = 2 days. Z = (13 - 15)/2 = -1.0. Since P(-1 ≤ Z ≤ 1) ≈ 68.26%, the lower tail P(Z ≤ -1) is 50% - 34.13% ≈ 15.87% ≈ 16%.",
+        smartTip: "Memorize Normal Z-table landmarks: Z = 0 → 50%; Z = -1 → 16%; Z = +1 → 84%.",
         smartCmd: "pert 9 15 21 target 13"
       },
       {
@@ -417,7 +703,8 @@
         question: "Which project management tool is deterministic, activity-oriented, and specifically used for time-cost trade-off (crashing) along the critical path?",
         options: ["PERT", "CPM (Critical Path Method)", "Gantt Milestone Chart", "VED Inventory Analysis"],
         answerIndex: 1,
-        explanation: "CPM is activity-oriented and deterministic, explicitly modeling normal and crash times/costs to optimize project crashing."
+        explanation: "CPM is activity-oriented and deterministic, explicitly modeling normal and crash times/costs to optimize project crashing.",
+        smartTip: "Crashing (Cost-Time slope) is always CPM."
       },
       {
         id: 10,
@@ -432,7 +719,8 @@
           "To eliminate inspection stages in production."
         ],
         answerIndex: 1,
-        explanation: "Value V = Function (F) / Cost (C). Value Engineering systematically improves function while reducing cost without compromising quality or reliability."
+        explanation: "Value V = Function (F) / Cost (C). Value Engineering systematically improves function while reducing cost without compromising quality or reliability.",
+        smartTip: "Value = Function / Cost (Never sacrifice quality in Value Engineering)."
       },
       {
         id: 11,
@@ -447,7 +735,8 @@
           "Factor of safety in structural design"
         ],
         answerIndex: 1,
-        explanation: "Six Sigma reduces process variation (standard deviation) to cap defects at 3.4 Defects Per Million Opportunities (DPMO)."
+        explanation: "Six Sigma reduces process variation (standard deviation) to cap defects at 3.4 Defects Per Million Opportunities (DPMO).",
+        smartTip: "Six Sigma = 3.4 defects per million opportunities (DPMO) by shrinking process variance."
       },
       {
         id: 12,
@@ -462,7 +751,8 @@
           "Product of reliability and availability"
         ],
         answerIndex: 1,
-        explanation: "Factor of Safety (FoS) = Maximum Stress (Ultimate or Yield Stress) / Allowable Working Stress."
+        explanation: "Factor of Safety (FoS) = Maximum Stress (Ultimate or Yield Stress) / Allowable Working Stress.",
+        smartTip: "FoS is always greater than 1: Failure Stress / Working Stress."
       },
       {
         id: 13,
@@ -472,7 +762,8 @@
         question: "Which term defines the probability that a system performs its intended function adequately for a given period of time under stated operating conditions?",
         options: ["Maintainability", "Reliability", "Quality Assurance", "Redundancy"],
         answerIndex: 1,
-        explanation: "Reliability R(t) is the probability that a system performs its intended function without failure for a specified period under specified conditions."
+        explanation: "Reliability R(t) is the probability that a system performs its intended function without failure for a specified period under specified conditions.",
+        smartTip: "Probability of survival over time t = Reliability R(t)."
       },
       {
         id: 14,
@@ -487,7 +778,8 @@
           "Occupational Health and Safety"
         ],
         answerIndex: 1,
-        explanation: "ISO 9001 specifies requirements for a Quality Management System (QMS), whereas ISO 14001 governs Environmental Management Systems."
+        explanation: "ISO 9001 specifies requirements for a Quality Management System (QMS), whereas ISO 14001 governs Environmental Management Systems.",
+        smartTip: "ISO 9001 = Quality (QMS); ISO 14001 = Environment (EMS)."
       },
       {
         id: 15,
@@ -502,7 +794,8 @@
           "Maintaining zero economic growth indefinitely."
         ],
         answerIndex: 1,
-        explanation: "Defined by the Brundtland Commission, sustainable development meets the needs of the present without compromising the ability of future generations to meet their own needs."
+        explanation: "Defined by the Brundtland Commission (1987), sustainable development meets the needs of the present without compromising the ability of future generations to meet their own needs.",
+        smartTip: "Brundtland Commission definition is a classic ESE Paper-I favorite."
       },
       {
         id: 16,
@@ -512,7 +805,8 @@
         question: "Consider the following statements regarding 'Engineering Ethics': (1) It is the activity of understanding moral values. (2) It resolves moral issues and justifies moral judgments. (3) It refers to the set of specifically moral problems and issues related to Engineering. Which are correct?",
         options: ["1 and 2 only", "2 and 3 only", "1 and 3 only", "1, 2, and 3"],
         answerIndex: 3,
-        explanation: "All three statements are correct and define the scope of Engineering Ethics as tested in UPSC ESE Paper-I."
+        explanation: "All three statements are correct and define the scope of Engineering Ethics as tested in UPSC ESE Paper-I.",
+        smartTip: "Understanding + Resolving + Justifying moral judgments = Engineering Ethics."
       },
       {
         id: 17,
@@ -527,7 +821,8 @@
           "There is no difference between the two senses."
         ],
         answerIndex: 1,
-        explanation: "Normative ethics addresses what 'ought to be' (justifying moral judgments and applying ethical codes), whereas Descriptive ethics simply describes what specific engineers believe or do without justification."
+        explanation: "Normative ethics addresses what 'ought to be' (justifying moral judgments and applying ethical codes), whereas Descriptive ethics simply describes what specific engineers believe or do without justification.",
+        smartTip: "Normative = Sets the Norm (What ought to be). Descriptive = Describes behavior without judging."
       },
       {
         id: 18,
@@ -537,7 +832,8 @@
         question: "Which philosopher is primarily associated with 'Rights Ethics' (the theory that actions are wrong if they violate fundamental human moral rights)?",
         options: ["J.S. Mill", "John Locke", "Aristotle", "Jeremy Bentham"],
         answerIndex: 1,
-        explanation: "John Locke pioneered Rights Ethics. J.S. Mill and Jeremy Bentham formulated Utilitarianism, Immanuel Kant formulated Duty Ethics, and Aristotle formulated Virtue Ethics."
+        explanation: "John Locke pioneered Rights Ethics. J.S. Mill and Jeremy Bentham formulated Utilitarianism, Immanuel Kant formulated Duty Ethics, and Aristotle formulated Virtue Ethics.",
+        smartTip: "Locke = Rights; Kant = Duty; Mill/Bentham = Utilitarianism; Aristotle = Virtue."
       },
       {
         id: 19,
@@ -547,7 +843,8 @@
         question: "Which ethical view holds that the 'right action consists solely in producing one's own good'?",
         options: ["Rule Utilitarianism", "Ethical Egoism", "Duty Ethics", "Altruism"],
         answerIndex: 1,
-        explanation: "Ethical Egoism holds that right action consists solely in promoting one's own self-interest."
+        explanation: "Ethical Egoism holds that right action consists solely in promoting one's own self-interest.",
+        smartTip: "Egoism = Self-interest only; Utilitarianism = Greatest good for the greatest number."
       },
       {
         id: 20,
@@ -562,7 +859,8 @@
           "Strict secrecy even when a design endangers human life"
         ],
         answerIndex: 1,
-        explanation: "The first canon of engineering codes of ethics mandates holding paramount the safety, health, and welfare of the public."
+        explanation: "The first canon of engineering codes of ethics mandates holding paramount the safety, health, and welfare of the public.",
+        smartTip: "Canon #1 of every Engineering Code: Public Safety, Health, and Welfare come first."
       },
       {
         id: 21,
@@ -577,7 +875,8 @@
           "Nonfeasance applies only to private contractors."
         ],
         answerIndex: 0,
-        explanation: "Malfeasance = deliberate unlawful act; Misfeasance = performing a lawful act in an improper/negligent manner; Nonfeasance = failure/omission to perform a mandatory duty."
+        explanation: "Malfeasance = deliberate unlawful act; Misfeasance = performing a lawful act in an improper/negligent manner; Nonfeasance = failure/omission to perform a mandatory duty.",
+        smartTip: "Mal = Bad/Illegal Act; Mis = Mistake in a Lawful Act; Non = Non-action (Omission)."
       },
       {
         id: 22,
@@ -592,7 +891,8 @@
           "Charging two clients for the same travel expense"
         ],
         answerIndex: 1,
-        explanation: "Plan-stamping is unethically signing/sealing drawings not prepared by or under the direct supervision of the licensed engineer (charging two clients for the same expense is 'Double Dipping')."
+        explanation: "Plan-stamping is unethically signing/sealing drawings not prepared by or under the direct supervision of the licensed engineer (charging two clients for the same expense is 'Double Dipping').",
+        smartTip: "Plan-Stamping = Rubber-stamping someone else's unsupervised blueprints."
       },
       {
         id: 23,
@@ -602,7 +902,8 @@
         question: "Which term is defined as 'mental toughness or consistency while working on the path of duty despite severe challenges, rather than running away from challenges'?",
         options: ["Trained Incapacity", "Perseverance", "Formalistic Impersonality", "Ethnic Tradition"],
         answerIndex: 1,
-        explanation: "Perseverance is mental toughness and consistency on the path of duty despite challenges."
+        explanation: "Perseverance is mental toughness and consistency on the path of duty despite challenges.",
+        smartTip: "Perseverance = Staying firm on duty during hard postings."
       },
       {
         id: 24,
@@ -617,7 +918,8 @@
           "The sender encrypts using their private key, and the receiver decrypts using their public key."
         ],
         answerIndex: 2,
-        explanation: "For confidentiality in Public Key Infrastructure (PKI), the sender encrypts with the receiver's public key, and only the receiver can decrypt with their private key."
+        explanation: "For confidentiality in Public Key Infrastructure (PKI), the sender encrypts with the receiver's public key, and only the receiver can decrypt with their private key.",
+        smartTip: "Confidentiality = Encrypt with Receiver's Public Key. Digital Signature = Sign with Sender's Private Key."
       },
       {
         id: 25,
@@ -627,7 +929,8 @@
         question: "Under India's National Green Hydrogen Mission, what is the target for green hydrogen production capacity per annum by the year 2030?",
         options: ["1 MMT", "5 Million Metric Tonnes (MMT)", "15 MMT", "25 MMT"],
         answerIndex: 1,
-        explanation: "The National Green Hydrogen Mission targets 5 Million Metric Tonnes (MMT) per annum of green hydrogen capacity by 2030."
+        explanation: "The National Green Hydrogen Mission targets 5 Million Metric Tonnes (MMT) per annum of green hydrogen capacity by 2030.",
+        smartTip: "Green Hydrogen 2030 Target = 5 MMT per annum."
       },
       {
         id: 26,
@@ -642,7 +945,8 @@
           "Funding maritime earthquake search operations"
         ],
         answerIndex: 2,
-        explanation: "Operationalized at COP28, the Loss and Damage Fund provides financial assistance to developing nations particularly vulnerable to climate change disasters."
+        explanation: "Operationalized at COP28, the Loss and Damage Fund provides financial assistance to developing nations particularly vulnerable to climate change disasters.",
+        smartTip: "COP28 (Dubai) = Operationalized the Loss and Damage Fund for climate-vulnerable nations."
       },
       {
         id: 27,
@@ -652,7 +956,8 @@
         question: "Which international treaty-based secretariat administers the global response to climate change, including the Paris Agreement and Nationally Determined Contributions (NDCs)?",
         options: ["UNEP", "UNFCCC", "WMO", "IEA"],
         answerIndex: 1,
-        explanation: "The United Nations Framework Convention on Climate Change (UNFCCC) administers the Paris Agreement and national NDC commitments."
+        explanation: "The United Nations Framework Convention on Climate Change (UNFCCC) administers the Paris Agreement and national NDC commitments.",
+        smartTip: "Paris Agreement + COP Summits + NDCs = Administered by UNFCCC."
       },
       {
         id: 28,
@@ -667,7 +972,8 @@
           "Accelerating rural vaccination campaigns"
         ],
         answerIndex: 2,
-        explanation: "PM Gati Shakti brings 16 ministries onto a unified digital GIS platform for multimodal infrastructure connectivity planning."
+        explanation: "PM Gati Shakti brings 16 ministries onto a unified digital GIS platform for multimodal infrastructure connectivity planning.",
+        smartTip: "PM Gati Shakti = Multimodal Infrastructure Connectivity across 16 Ministries."
       },
       {
         id: 29,
@@ -682,7 +988,8 @@
           "Consumer Electronics and Semiconductors"
         ],
         answerIndex: 2,
-        explanation: "EU CBAM initially covers six carbon-intensive sectors: cement, iron and steel, aluminum, fertilizers, electricity, and hydrogen."
+        explanation: "EU CBAM initially covers six carbon-intensive sectors: cement, iron and steel, aluminum, fertilizers, electricity, and hydrogen.",
+        smartTip: "EU CBAM 6 Sectors: Cement, Steel, Aluminum, Fertilizers, Electricity, Hydrogen."
       },
       {
         id: 30,
@@ -697,7 +1004,8 @@
           "Unique Payment Identifier; ICICI Bank"
         ],
         answerIndex: 1,
-        explanation: "UPI stands for Unified Payments Interface, with Paytm Payments Bank and Airtel Payments Bank among the earliest adopters of on-device UPI LITE."
+        explanation: "UPI stands for Unified Payments Interface, with Paytm Payments Bank and Airtel Payments Bank among the earliest adopters of on-device UPI LITE.",
+        smartTip: "UPI = Unified Payments Interface (developed by NPCI)."
       },
       {
         id: 31,
@@ -712,7 +1020,8 @@
           "Ministry of Statistics and Programme Implementation"
         ],
         answerIndex: 2,
-        explanation: "UIDAI is a statutory body operating under the Ministry of Electronics and Information Technology (MeitY)."
+        explanation: "UIDAI is a statutory body operating under the Ministry of Electronics and Information Technology (MeitY).",
+        smartTip: "UIDAI (Aadhaar) = Ministry of Electronics & IT (MeitY), NOT Home Affairs."
       },
       {
         id: 32,
@@ -727,7 +1036,8 @@
           "Greenhouse gas emissions from aviation"
         ],
         answerIndex: 1,
-        explanation: "The Stockholm Convention protects human health and the environment from Persistent Organic Pollutants (POPs)."
+        explanation: "The Stockholm Convention protects human health and the environment from Persistent Organic Pollutants (POPs).",
+        smartTip: "Stockholm = POPs; Montreal = Ozone; Basel = Hazardous Waste."
       },
       {
         id: 33,
@@ -742,7 +1052,8 @@
           "Sunlight → Top Carnivores → Carnivores → Producers → Herbivores"
         ],
         answerIndex: 2,
-        explanation: "Asked in TGPSC AEE (21 May 2023): Energy flows unidirectionally from Sunlight → Producers → Herbivores → Carnivores → Top Carnivores."
+        explanation: "Asked in TGPSC AEE (21 May 2023): Energy flows unidirectionally from Sunlight → Producers → Herbivores → Carnivores → Top Carnivores.",
+        smartTip: "Always start with the primary energy source: Sunlight → Autotrophs (Producers)."
       },
       {
         id: 34,
@@ -752,7 +1063,8 @@
         question: "Which of the following types of Ecology looks at the smallest fundamental levels of life, that is, the cellular level?",
         options: ["Microbial Ecology", "Landscape Ecology", "Population Ecology", "Behavioral Ecology"],
         answerIndex: 0,
-        explanation: "Asked in TGPSC AEE (09 May 2023): Microbial Ecology investigates the smallest fundamental cellular level of life."
+        explanation: "Asked in TGPSC AEE (09 May 2023): Microbial Ecology investigates the smallest fundamental cellular level of life.",
+        smartTip: "Cellular level = Microbes = Microbial Ecology."
       },
       {
         id: 35,
@@ -762,7 +1074,8 @@
         question: "Read the following statements about Deforestation: (A) The deliberate clearance of forested terrain is known as deforestation. (B) To make room for agriculture, animal grazing, and to obtain wood for building, manufacture, and fuel, forests have been cleared. Identify the correct option:",
         options: ["Only A is correct", "Only B is correct", "Both A and B are correct", "Neither A nor B is correct"],
         answerIndex: 2,
-        explanation: "Asked in TGPSC AEE (09 May 2023): Both statements A and B are correct."
+        explanation: "Asked in TGPSC AEE (09 May 2023): Both statements A and B are correct.",
+        smartTip: "Both definition (A) and drivers (B) of deforestation are accurate."
       },
       {
         id: 36,
@@ -777,7 +1090,8 @@
           "Neither A nor B is incorrect (Both are correct)"
         ],
         answerIndex: 3,
-        explanation: "Asked in TGPSC AEE (09 May 2023): Both statements A and B are factually true, so neither is incorrect."
+        explanation: "Asked in TGPSC AEE (09 May 2023): Both statements A and B are factually true, so neither is incorrect.",
+        smartTip: "Watch out for TGPSC's 'Which is INCORRECT' prompt trap! Since both are true, choose 'Neither A nor B'."
       },
       {
         id: 37,
@@ -787,7 +1101,8 @@
         question: "Read the following statements about Disaster Management: (A) Efforts at mitigation and prevention are intended to lessen the potential harm and suffering that catastrophes may bring about. (B) Actions that can worsen a disaster's effects are particularly referred to as mitigation. Identify the INCORRECT statement:",
         options: ["Only A", "Only B", "Both A and B", "Neither A nor B"],
         answerIndex: 1,
-        explanation: "Asked in TGPSC AEE (09 May 2023): Statement B is incorrect because mitigation LESSENS disaster impacts rather than worsening them."
+        explanation: "Asked in TGPSC AEE (09 May 2023): Statement B is incorrect because mitigation LESSENS disaster impacts rather than worsening them.",
+        smartTip: "Mitigation = Minimizing/Lessening disaster severity, never worsening it."
       },
       {
         id: 38,
@@ -797,7 +1112,8 @@
         question: "As per the final report of the High Powered Committee on Disaster Management, which of the following is/are categorized under 'Geologically Related Hazards'? (I) Droughts (II) Earthquakes",
         options: ["Neither I nor II", "Both I and II", "Only II (Earthquakes)", "Only I (Droughts)"],
         answerIndex: 2,
-        explanation: "Asked in TGPSC AE (19 Oct 2023): Earthquakes fall under Geologically Related Hazards, whereas Droughts fall under Water and Climate Related Hazards."
+        explanation: "Asked in TGPSC AE (19 Oct 2023): Earthquakes fall under Geologically Related Hazards, whereas Droughts fall under Water and Climate Related Hazards.",
+        smartTip: "Earthquakes/Landslides = Geological; Droughts/Floods/Cyclones = Water & Climate."
       },
       {
         id: 39,
@@ -807,7 +1123,8 @@
         question: "In January 2023, which major geological/environmental problem came to light at Joshimath in Uttarakhand, India?",
         options: ["Volcanic eruption", "Land subsidence and structural cracks in buildings", "Tsunami inundation", "Desertification"],
         answerIndex: 1,
-        explanation: "Asked in TGPSC AEE (22 May 2023): Joshimath experienced land subsidence and structural cracks."
+        explanation: "Asked in TGPSC AEE (22 May 2023): Joshimath experienced land subsidence (sinking of ground) and structural cracks.",
+        smartTip: "Joshimath (Uttarakhand) = Land Subsidence zone."
       },
       {
         id: 40,
@@ -817,7 +1134,8 @@
         question: "How many states of India were identified as among the top 50 most vulnerable regions in the world to climate risks as per the XDI 'Gross Domestic Climate Risk' report?",
         options: ["9", "3", "15", "21"],
         answerIndex: 0,
-        explanation: "Asked in TGPSC AEE (09 May 2023): Nine (9) Indian states were featured in the top 50 most vulnerable regions globally."
+        explanation: "Asked in TGPSC AEE (09 May 2023): Nine (9) Indian states were featured in the top 50 most vulnerable regions globally.",
+        smartTip: "XDI Gross Domestic Climate Risk Report = 9 Indian states in global top 50."
       },
       {
         id: 41,
@@ -827,7 +1145,8 @@
         question: "Consider the following regarding the Gentlemen's Agreement (Feb 20, 1956): (1) Signed between Andhra and Telangana leaders including B. Gopala Reddy, B. Ramakrishna Rao, and K.V. Ranga Reddy. (2) Tanguturi Prakasam Pantulu was NOT a signatory. (3) It enforced Mulki safeguards for Telangana. Which are correct?",
         options: ["1 and 2 only", "2 and 3 only", "1 and 3 only", "1, 2, and 3"],
         answerIndex: 3,
-        explanation: "Tested in TGPSC AEE & AE 2023: All three statements are historically accurate."
+        explanation: "Tested in TGPSC AEE & AE 2023: All three statements are historically accurate. The 8 signatories were 4 from Andhra (B. Gopala Reddy, N. Sanjiva Reddy, G. Latchanna, A. Satyanarayana Raju) and 4 from Telangana (B. Ramakrishna Rao, K.V. Ranga Reddy, M. Chenna Reddy, J.V. Narsing Rao).",
+        smartTip: "Memorize the 4+4 Signatories of Feb 20, 1956—Tanguturi Prakasam was NOT one of them!"
       },
       {
         id: 42,
@@ -837,7 +1156,8 @@
         question: "Which dynasty's rule in Telangana led to the evolution and patronage of vigorous martial dance forms such as 'Perini Sivatandavam'?",
         options: ["Kakatiya Dynasty", "Asaf Jahi Dynasty", "Qutb Shahi Dynasty", "Maurya Dynasty"],
         answerIndex: 0,
-        explanation: "Asked in TGPSC AEE (09 May 2023): Kakatiya rule patronized Perini Sivatandavam."
+        explanation: "Asked in TGPSC AEE (09 May 2023): Kakatiya rule patronized Perini Sivatandavam, codified by Jayapa Senani in Nritta Ratnavali.",
+        smartTip: "Perini Sivatandavam (Warrior Dance) = Kakatiya Dynasty."
       },
       {
         id: 43,
@@ -847,7 +1167,8 @@
         question: "In how many categories did the state of Telangana win National Tourism Awards on World Tourism Day in New Delhi on September 21, 2022?",
         options: ["Three", "One", "Five", "Seven"],
         answerIndex: 0,
-        explanation: "Asked in TGPSC AEE (09 May 2023): Telangana won National Tourism Awards in Three (3) categories."
+        explanation: "Asked in TGPSC AEE (09 May 2023): Telangana won National Tourism Awards in Three (3) categories.",
+        smartTip: "Telangana National Tourism Awards (Sept 2022) = 3 Categories."
       },
       {
         id: 44,
@@ -857,7 +1178,8 @@
         question: "With respect to power and energy in Telangana state: (I) Telangana state has the third-largest state-owned power utility in the country (TSGENCO/TGGENCO) with baseline installed capacity of 4365.30 MW. (II) The State has 60 power generating projects out of which 15 are conventional. Which option is correct?",
         options: ["Only Statement I is correct", "Only Statement II is correct", "Both I and II are correct", "Both I and II are incorrect"],
         answerIndex: 0,
-        explanation: "Asked in TGPSC AEE (22 May 2023): Only Statement I is correct."
+        explanation: "Asked in TGPSC AEE (22 May 2023): Only Statement I is correct.",
+        smartTip: "TGGENCO is the 3rd largest state-owned power utility in India."
       },
       {
         id: 45,
@@ -867,7 +1189,8 @@
         question: "As per Census 2011, the rural population of Telangana constitutes what percentage of the total population of the state?",
         options: ["36.12%", "38.88%", "63.88%", "61.12%"],
         answerIndex: 3,
-        explanation: "Asked in TGPSC AE (19 Oct 2023): Rural population is 61.12% and Urban population is 38.88%."
+        explanation: "Asked in TGPSC AE (19 Oct 2023): Rural population is 61.12% and Urban population is 38.88%.",
+        smartTip: "Telangana 2011 Census Split: Rural = 61.12% | Urban = 38.88%."
       },
       {
         id: 46,
@@ -877,7 +1200,8 @@
         question: "In which district region of Telangana are the famous Kuntala and Pochera waterfalls, as well as the tribal Nagoba Jatara festival, located?",
         options: ["Adilabad region", "Nalgonda", "Mahabubnagar", "Khammam"],
         answerIndex: 0,
-        explanation: "Kuntala and Pochera waterfalls and Nagoba Jatara are located in the Adilabad region."
+        explanation: "Kuntala and Pochera waterfalls and Nagoba Jatara (Keslapur) are located in the Adilabad region.",
+        smartTip: "Kuntala + Pochera Waterfalls + Nagoba Jatara = Adilabad."
       },
       {
         id: 47,
@@ -887,7 +1211,8 @@
         question: "Verify the Constitutional provisions: (1) Citizenship is in Part II. (2) Rural Local Governments were constitutionalized by the 73rd Amendment Act. (3) Part IX-A (Municipalities) was included by the 74th Amendment Act. Which are correct?",
         options: ["1 and 2 only", "2 and 3 only", "1 and 3 only", "1, 2, and 3"],
         answerIndex: 3,
-        explanation: "All three constitutional statements tested in TGPSC AEE and AE 2023 are correct."
+        explanation: "All three constitutional statements tested in TGPSC AEE and AE 2023 are correct.",
+        smartTip: "Part II = Citizenship; 73rd = Part IX (Panchayats); 74th = Part IX-A (Municipalities)."
       },
       {
         id: 48,
@@ -902,7 +1227,8 @@
           "Neither I nor II is in the Union List; Speaker is ex-officio Chairman"
         ],
         answerIndex: 0,
-        explanation: "Asked in TGPSC AE (19 Oct 2023): Defence is in the Union List (Forests is in the Concurrent List), and the Vice-President is the ex-officio Chairman of Rajya Sabha."
+        explanation: "Asked in TGPSC AE (19 Oct 2023): Defence is in the Union List (Forests was moved to the Concurrent List by the 42nd Amendment), and the Vice-President is the ex-officio Chairman of Rajya Sabha.",
+        smartTip: "Forests & Education moved to the Concurrent List in 1976 (42nd Amendment)."
       },
       {
         id: 49,
@@ -912,7 +1238,8 @@
         question: "Who gave the idea in 'The General Theory of Employment, Interest and Money' that government fiscal policy should be used to stabilize the level of output and employment?",
         options: ["John Maynard Keynes", "Adam Smith", "Milton Friedman", "Karl Marx"],
         answerIndex: 0,
-        explanation: "Asked in TGPSC AEE (21 May 2023): John Maynard Keynes authored 'The General Theory of Employment, Interest and Money'."
+        explanation: "Asked in TGPSC AEE (21 May 2023): John Maynard Keynes authored 'The General Theory of Employment, Interest and Money' (1936).",
+        smartTip: "Counter-cyclical Fiscal Stabilization = John Maynard Keynes."
       },
       {
         id: 50,
@@ -927,7 +1254,8 @@
           "Revenue expenditure - Revenue receipts"
         ],
         answerIndex: 2,
-        explanation: "Asked in TGPSC AEE (21 May 2023): Fiscal Deficit = Total Expenditure - (Revenue Receipts + Non-Debt Creating Capital Receipts)."
+        explanation: "Asked in TGPSC AEE (21 May 2023): Fiscal Deficit = Total Expenditure - (Revenue Receipts + Non-Debt Creating Capital Receipts).",
+        smartTip: "Watch the inner plus sign: Total Expenditure minus the SUM of Revenue Receipts & Non-Debt Capital Receipts."
       },
       {
         id: 51,
@@ -937,7 +1265,8 @@
         question: "Consider the statements: (I) In a capitalist society, consumer goods produced are distributed on the basis of Purchasing Power. (II) Government bonds are issued with an original maturity of one year or more. Which is/are correct?",
         options: ["Only I", "Only II", "Both I and II", "Neither I nor II"],
         answerIndex: 2,
-        explanation: "Asked in TGPSC AE (19 Oct 2023): Both statements I and II are correct."
+        explanation: "Asked in TGPSC AE (19 Oct 2023): Both statements I and II are correct (taken directly from NCERT Class XII Macroeconomics).",
+        smartTip: "Treasury Bills < 1 Year maturity; Government Bonds ≥ 1 Year maturity."
       },
       {
         id: 52,
@@ -952,7 +1281,8 @@
           "Reducing domestic inflation; NITI Aayog"
         ],
         answerIndex: 0,
-        explanation: "Devaluation is the official reduction in the external value of a domestic currency; NSE launched India's first Municipal Bond Index."
+        explanation: "Devaluation is the official reduction in the external value of a domestic currency; NSE launched India's first Municipal Bond Index.",
+        smartTip: "First Municipal Bond Index in India = NSE."
       },
       {
         id: 53,
@@ -962,7 +1292,8 @@
         question: "Verify the Modern Indian History facts tested by TGPSC: (1) Sirajuddaulah was Nawab of Bengal during the Battle of Plassey (1757). (2) The Non-Cooperation and Khilafat Movement began in January 1921. (3) The Resolution of 'Poorna Swaraj' was passed in 1929. Which are correct?",
         options: ["1 and 2 only", "1 and 3 only", "2 and 3 only", "1, 2, and 3"],
         answerIndex: 3,
-        explanation: "All three statements were verified in TGPSC AEE and AE 2023 official keys."
+        explanation: "All three statements were verified in TGPSC AEE and AE 2023 official keys (with 'January 1921' lifted verbatim from NCERT Class X History).",
+        smartTip: "TGPSC lifts history sentences word-for-word from NCERT Class X."
       },
       {
         id: 54,
@@ -972,7 +1303,8 @@
         question: "Which of the following statements regarding Mycoplasma is/are correct? (I) They completely lack a cell wall. (II) They are the smallest living cells known and can survive without oxygen.",
         options: ["Neither I nor II", "Only I", "Both I and II", "Only II"],
         answerIndex: 2,
-        explanation: "Asked in TGPSC AE (19 Oct 2023) verbatim from NCERT Class XI Biology: Both I and II are correct."
+        explanation: "Asked in TGPSC AE (19 Oct 2023) verbatim from NCERT Class XI Biology: Both I and II are correct.",
+        smartTip: "Mycoplasma = Smallest living cell + No cell wall + Anaerobic survival."
       },
       {
         id: 55,
@@ -982,7 +1314,8 @@
         question: "Which launch vehicle successfully launched ISRO's Chandrayaan-3 into orbit, and in which year was the farmer interface 'e-Krishi Samvad' launched?",
         options: ["LVM3-M4; 2017", "PSLV-C48; 2015", "GSLV Mk II; 2019", "PSLV-C57; 2021"],
         answerIndex: 0,
-        explanation: "Asked in TGPSC AE (19 Oct 2023): LVM3-M4 launched Chandrayaan-3, and e-Krishi Samvad was launched in 2017."
+        explanation: "Asked in TGPSC AE (19 Oct 2023): LVM3-M4 launched Chandrayaan-3 (PSLV-C57 launched Aditya-L1), and e-Krishi Samvad was launched in 2017.",
+        smartTip: "Chandrayaan-3 = LVM3-M4 | Aditya-L1 = PSLV-C57."
       },
       {
         id: 56,
@@ -992,7 +1325,8 @@
         question: "Match the hydrological instruments with their exact use: (I) Pluviometer (II) Lysimeter (III) Atmometer. Uses: (1) Evapotranspiration (2) Evaporation (3) Rainfall depth.",
         options: ["I-1, II-3, III-2", "I-2, II-1, III-3", "I-3, II-1, III-2", "I-3, II-2, III-1"],
         answerIndex: 2,
-        explanation: "Pluviometer measures Rainfall (I-3), Lysimeter measures Evapotranspiration (II-1), and Atmometer measures Evaporation (III-2)."
+        explanation: "Pluviometer measures Rainfall (I-3), Lysimeter measures Evapotranspiration (II-1), and Atmometer measures Evaporation (III-2).",
+        smartTip: "Pluvio = Rain; Lysi = Evapotranspiration; Atmo = Evaporation."
       },
       {
         id: 57,
@@ -1003,6 +1337,7 @@
         options: ["Only I and II", "Only II and III", "I, II, and III", "Only I and III"],
         answerIndex: 3,
         explanation: "Each 6-letter word is split into two 3-letter halves and reversed independently: RELATE → LER+ETA = LERETA (I is true); BASINT → SAB+TNI = SABTNI (II is false); COLOUR → LOC+RUO = LOCRUO (III is true).",
+        smartTip: "Split 6-letter words 3+3 before reversing!",
         smartCmd: "split reverse VERBAL RELATE BASINT COLOUR"
       },
       {
@@ -1018,7 +1353,8 @@
           "Umang is standing between Daksh and Nayan."
         ],
         answerIndex: 0,
-        explanation: "Facing North, Left-to-Right order is: [1] Daksh - [2] Nayan - [3] Oman - [4] Likith - [5] Umang. Thus Oman is immediately to the right of Nayan."
+        explanation: "Facing North, Left-to-Right order is: [1] Daksh - [2] Nayan - [3] Oman - [4] Likith - [5] Umang. Thus Oman is immediately to the right of Nayan.",
+        smartTip: "Use Tab 4 (Scratchpad 5-Seat North Row) to tap and visualize seating instantly!"
       },
       {
         id: 59,
@@ -1028,7 +1364,8 @@
         question: "Verify the three English answers from TGPSC 2023: (1) Passive of 'I had washed all the windowpanes before the rain' is 'All the windowpanes had been washed before the rain.' (2) 'This was a ___ disguised swimming pool' takes the adverb 'cleverly'. (3) The synonym of 'Lackluster' is 'Sombre'.",
         options: ["All three (1, 2, and 3) are correct", "Only 1 and 2 are correct", "Only 2 and 3 are correct", "Only 1 is correct"],
         answerIndex: 0,
-        explanation: "All three grammatical and lexical items from TGPSC AEE & AE 2023 are correct."
+        explanation: "All three grammatical and lexical items from TGPSC AEE & AE 2023 are correct.",
+        smartTip: "Past Perfect Active (had + V3) → Passive (had been + V3). Lackluster = Sombre (dull)."
       },
       {
         id: 60,
@@ -1038,18 +1375,20 @@
         question: "Verify these 5 Core Electrical Engineering principles: (1) KCL is based on conservation of charge. (2) At series RLC resonance (XL = XC), impedance is minimum (Z = R). (3) In a balanced 3-phase star system, VL = √3 Vph. (4) Transformer max efficiency occurs when Copper Loss = Iron Loss. (5) Max DC power transfer occurs when RL = Rth.",
         options: ["All 5 principles are correct", "Only 1, 2, and 4 are correct", "Only 2, 3, and 5 are correct", "Only 1 and 5 are correct"],
         answerIndex: 0,
-        explanation: "All 5 foundational Electrical Engineering laws are correct."
+        explanation: "All 5 foundational Electrical Engineering laws are correct.",
+        smartTip: "KCL = Charge; KVL = Energy; Transformer Max η → Cu Loss = Core Loss."
       }
     ];
 
     // =========================================================================
-    // 3. STATE & EXTERNAL questions.json LOADER
+    // 3. STATE MANAGEMENT & EXTERNAL questions.json AUTO-FETCH
     // =========================================================================
     let QUESTIONS_DB = [...FALLBACK_QUESTIONS_DB];
     let currentFeed = [...QUESTIONS_DB];
     let activeQuestionId = 1;
+    let soundEnabled = true;
 
-    let appState = JSON.parse(localStorage.getItem("voltshorts_pwa_state")) || {
+    let appState = JSON.parse(localStorage.getItem("voltshorts_xp_state_v3")) || {
       xp: 0,
       streak: 0,
       answers: {},
@@ -1059,23 +1398,25 @@
     };
 
     async function loadExternalJSON() {
+      const badge = document.getElementById("db-source-badge");
       try {
         const res = await fetch("./questions.json", { cache: "no-store" });
         if (res.ok) {
           const data = await res.json();
           if (Array.isArray(data) && data.length > 0) {
             QUESTIONS_DB = data;
+            if (badge) badge.textContent = `Live JSON (${data.length} Qs)`;
           }
         }
       } catch (err) {
-        // Offline or local file:// mode -> uses FALLBACK_QUESTIONS_DB seamlessly
+        if (badge) badge.textContent = `Embedded DB (${QUESTIONS_DB.length} Qs)`;
       }
       applyFilters();
       updateHUD();
     }
 
     function saveState() {
-      localStorage.setItem("voltshorts_pwa_state", JSON.stringify(appState));
+      localStorage.setItem("voltshorts_xp_state_v3", JSON.stringify(appState));
       updateHUD();
     }
 
@@ -1088,19 +1429,37 @@
           else wrong++;
         }
       });
+      const totalAttempted = correct + wrong;
       const net = (correct * 1) - (wrong * (1 / 3));
+      const acc = totalAttempted > 0 ? Math.round((correct / totalAttempted) * 100) : 0;
       const level = Math.floor(appState.xp / 100) + 1;
+      const xpInLevel = appState.xp % 100;
 
       document.getElementById("xp-count").textContent = appState.xp;
+      document.getElementById("xp-bar").style.width = `${xpInLevel}%`;
       document.getElementById("streak-count").textContent = appState.streak;
       document.getElementById("net-score").textContent = net.toFixed(2);
       document.getElementById("level-badge").textContent = `LVL ${level}`;
+      document.getElementById("solved-progress").textContent = `${totalAttempted} / ${QUESTIONS_DB.length}`;
+      document.getElementById("accuracy-rate").textContent = `${acc}%`;
+      document.getElementById("bookmark-count").textContent = appState.bookmarks.length;
+    }
+
+    function toggleMobileSidebar() {
+      const sb = document.getElementById("left-sidebar");
+      sb.classList.toggle("-translate-x-full");
     }
 
     // =========================================================================
-    // 4. WEB AUDIO ARCADE SOUND EFFECTS
+    // 4. ARCADE SOUND SYNTHESIZER & CONFETTI BURST ENGINE
     // =========================================================================
+    function toggleSound() {
+      soundEnabled = !soundEnabled;
+      document.getElementById("sound-btn").textContent = soundEnabled ? "🔊" : "🔇";
+    }
+
     function playTone(type) {
+      if (!soundEnabled) return;
       try {
         const ctx = new (window.AudioContext || window.webkitAudioContext)();
         const osc = ctx.createOscillator();
@@ -1110,11 +1469,11 @@
 
         if (type === "win") {
           osc.frequency.setValueAtTime(523.25, ctx.currentTime);
-          osc.frequency.exponentialRampToValueAtTime(783.99, ctx.currentTime + 0.18);
+          osc.frequency.exponentialRampToValueAtTime(880, ctx.currentTime + 0.18);
         } else if (type === "wrong") {
           osc.type = "sawtooth";
-          osc.frequency.setValueAtTime(220, ctx.currentTime);
-          osc.frequency.exponentialRampToValueAtTime(130, ctx.currentTime + 0.22);
+          osc.frequency.setValueAtTime(210, ctx.currentTime);
+          osc.frequency.exponentialRampToValueAtTime(120, ctx.currentTime + 0.22);
         } else {
           osc.frequency.setValueAtTime(660, ctx.currentTime);
         }
@@ -1125,15 +1484,49 @@
       } catch (e) {}
     }
 
+    function fireConfetti() {
+      const c = document.getElementById("confetti-canvas");
+      const ctx = c.getContext("2d");
+      c.width = window.innerWidth;
+      c.height = window.innerHeight;
+      const pieces = Array.from({ length: 42 }, () => ({
+        x: c.width / 2,
+        y: c.height / 2,
+        vx: (Math.random() - 0.5) * 14,
+        vy: (Math.random() - 0.8) * 14,
+        size: Math.random() * 6 + 4,
+        color: ["#10b981", "#3b82f6", "#f59e0b", "#ec4899", "#06b6d4"][Math.floor(Math.random() * 5)]
+      }));
+      let frame = 0;
+      function tick() {
+        ctx.clearRect(0, 0, c.width, c.height);
+        pieces.forEach((p) => {
+          p.x += p.vx;
+          p.y += p.vy;
+          p.vy += 0.35;
+          ctx.fillStyle = p.color;
+          ctx.fillRect(p.x, p.y, p.size, p.size);
+        });
+        if (++frame < 45) requestAnimationFrame(tick);
+        else ctx.clearRect(0, 0, c.width, c.height);
+      }
+      tick();
+    }
+
     // =========================================================================
-    // 5. SHORTS FEED RENDERING & GAMEPLAY ACTIONS
+    // 5. YOUTUBE SHORTS FEED & FLOATING ACTION RAIL
     // =========================================================================
     function applyFilters() {
-      const filterVal = document.getElementById("exam-filter").value;
+      const examVal = document.getElementById("exam-filter").value;
+      const subjVal = document.getElementById("subject-filter").value;
+
       currentFeed = QUESTIONS_DB.filter((q) => {
-        if (filterVal === "ALL") return true;
-        if (filterVal === "BOOKMARKED") return appState.bookmarks.includes(q.id);
-        return q.exam === filterVal;
+        const matchExam =
+          examVal === "ALL" ? true :
+          examVal === "BOOKMARKED" ? appState.bookmarks.includes(q.id) :
+          q.exam === examVal;
+        const matchSubj = subjVal === "ALL" ? true : q.subject === subjVal;
+        return matchExam && matchSubj;
       });
       renderShortsFeed();
     }
@@ -1147,6 +1540,7 @@
         appState.xp += 25;
         appState.streak += 1;
         playTone("win");
+        fireConfetti();
       } else {
         appState.streak = 0;
         playTone("wrong");
@@ -1162,19 +1556,21 @@
         playTone("next");
         saveState();
       }
+      scrollToSlide(slideIndex + 1);
+    }
+
+    function scrollToSlide(targetIdx) {
       const feed = document.getElementById("shorts-feed");
-      const nextSlide = feed.children[slideIndex + 1];
-      if (nextSlide) {
-        nextSlide.scrollIntoView({ behavior: "smooth" });
+      if (targetIdx >= 0 && targetIdx < feed.children.length) {
+        feed.children[targetIdx].scrollIntoView({ behavior: "smooth" });
       }
     }
 
     function useFiftyFifty(qId) {
       if (appState.answers[qId] !== undefined || appState.hiddenOptions[qId]) return;
       const q = QUESTIONS_DB.find((item) => item.id === qId);
-      const wrongIndices = [0, 1, 2, 3].filter((i) => i !== q.answerIndex);
-      wrongIndices.sort(() => Math.random() - 0.5);
-      appState.hiddenOptions[qId] = [wrongIndices[0], wrongIndices[1]];
+      const wrongs = [0, 1, 2, 3].filter((i) => i !== q.answerIndex).sort(() => Math.random() - 0.5);
+      appState.hiddenOptions[qId] = [wrongs[0], wrongs[1]];
       saveState();
       renderShortsFeed();
     }
@@ -1187,23 +1583,90 @@
       renderShortsFeed();
     }
 
+    function shareQuestion(qId) {
+      const q = QUESTIONS_DB.find((item) => item.id === qId);
+      const text = `⚡ VoltShorts XP Challenge (Q${q.id} - ${q.sourceTag}):\n${q.question}\nA) ${q.options[0]}\nB) ${q.options[1]}\nC) ${q.options[2]}\nD) ${q.options[3]}`;
+      if (navigator.share) {
+        navigator.share({ title: "VoltShorts XP Quiz", text }).catch(() => {});
+      } else {
+        navigator.clipboard.writeText(text);
+        alert("Question copied to clipboard!");
+      }
+    }
+
+    function shuffleFeed() {
+      currentFeed.sort(() => Math.random() - 0.5);
+      renderShortsFeed();
+      scrollToSlide(0);
+    }
+
+    function resetArenaProgress() {
+      if (confirm("Reset all solved answers, streaks, and scores?")) {
+        appState.answers = {};
+        appState.doneRead = {};
+        appState.hiddenOptions = {};
+        appState.streak = 0;
+        saveState();
+        renderShortsFeed();
+      }
+    }
+
     function downloadQuestionsJSON() {
-      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(QUESTIONS_DB, null, 2));
-      const a = document.createElement("a");
-      a.setAttribute("href", dataStr);
-      a.setAttribute("download", "questions.json");
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
+      triggerFileDownload("questions.json", JSON.stringify(QUESTIONS_DB, null, 2), "application/json");
+    }
+
+    function openAddQuestionModal() {
+      document.getElementById("add-q-modal").classList.remove("hidden");
+    }
+
+    function closeAddQuestionModal() {
+      document.getElementById("add-q-modal").classList.add("hidden");
+    }
+
+    function saveNewQuestionToDB() {
+      const exam = document.getElementById("new-q-exam").value;
+      const subject = document.getElementById("new-q-subj").value.trim() || "General Studies";
+      const question = document.getElementById("new-q-text").value.trim();
+      const options = [
+        document.getElementById("new-q-opt0").value.trim(),
+        document.getElementById("new-q-opt1").value.trim(),
+        document.getElementById("new-q-opt2").value.trim(),
+        document.getElementById("new-q-opt3").value.trim()
+      ];
+      const answerIndex = parseInt(document.getElementById("new-q-ans").value);
+      const explanation = document.getElementById("new-q-exp").value.trim();
+      const smartTip = document.getElementById("new-q-tip").value.trim();
+
+      if (!question || options.some((o) => !o) || !explanation) {
+        alert("Please fill in the question, all 4 options, and explanation.");
+        return;
+      }
+
+      const newQ = {
+        id: QUESTIONS_DB.length + 1,
+        exam,
+        sourceTag: `${exam} Custom`,
+        subject,
+        question,
+        options,
+        answerIndex,
+        explanation,
+        smartTip: smartTip || "Key concept verified for rapid revision."
+      };
+
+      QUESTIONS_DB.push(newQ);
+      closeAddQuestionModal();
+      applyFilters();
+      downloadQuestionsJSON();
     }
 
     function renderShortsFeed() {
       const feed = document.getElementById("shorts-feed");
-      const currentScroll = feed.scrollTop;
+      const prevScroll = feed.scrollTop;
       feed.innerHTML = "";
 
       if (currentFeed.length === 0) {
-        feed.innerHTML = `<div class="h-full flex items-center justify-center text-slate-400 text-sm">No questions in this filter.</div>`;
+        feed.innerHTML = `<div class="h-full flex items-center justify-center text-slate-400 text-sm">No questions match this filter.</div>`;
         return;
       }
 
@@ -1215,24 +1678,25 @@
         const isSaved = appState.bookmarks.includes(q.id);
         const hiddenOpts = appState.hiddenOptions[q.id] || [];
 
-        const slide = document.createElement("section");
-        slide.className = "short-slide w-full";
-        slide.dataset.qid = q.id;
+        const badgeColor =
+          q.exam === "UPSC ESE" ? "bg-blue-500/20 text-blue-300 border-blue-500/40" :
+          q.exam === "TGPSC" ? "bg-cyan-500/20 text-cyan-300 border-cyan-500/40" :
+          "bg-amber-500/20 text-amber-300 border-amber-500/40";
 
         let optionsHTML = "";
         q.options.forEach((optText, oIdx) => {
           if (hiddenOpts.includes(oIdx) && !isAnswered) {
             optionsHTML += `
-              <div class="w-full px-3.5 py-2.5 rounded-xl border border-slate-800/50 bg-slate-900/20 text-slate-600 text-xs line-through">
+              <div class="w-full px-3.5 py-2.5 rounded-xl border border-slate-800/50 bg-slate-900/30 text-slate-600 text-xs line-through">
                 ${letters[oIdx]}. Eliminated by 50:50 Lifeline
               </div>`;
             return;
           }
 
-          let style = "bg-slate-900/90 hover:bg-slate-800 border-slate-700/80 text-slate-100";
+          let style = "bg-slate-900/90 hover:bg-slate-800/90 border-slate-700/80 text-slate-100";
           if (isAnswered) {
             if (oIdx === q.answerIndex) {
-              style = "bg-emerald-950/90 border-emerald-400 text-emerald-200 font-semibold shadow-lg";
+              style = "bg-emerald-950/90 border-emerald-400 text-emerald-200 font-semibold shadow-lg shadow-emerald-950/50";
             } else if (oIdx === chosen) {
               style = "bg-rose-950/90 border-rose-500 text-rose-200";
             } else {
@@ -1243,21 +1707,28 @@
           optionsHTML += `
             <button onclick="selectAnswer(${q.id}, ${oIdx})"
               class="w-full text-left px-3.5 py-2.5 rounded-xl border text-xs sm:text-sm transition flex items-start gap-2.5 ${style}">
-              <span class="font-black text-xs px-1.5 py-0.5 rounded bg-slate-950/70 shrink-0">${letters[oIdx]}</span>
+              <span class="font-black text-xs px-1.5 py-0.5 rounded bg-slate-950/80 shrink-0">${letters[oIdx]}</span>
               <span class="leading-snug">${optText}</span>
             </button>
           `;
         });
 
-        const answerBoxHTML = isAnswered ? `
-          <div class="mt-2 p-3 rounded-2xl bg-slate-950/95 border border-emerald-500/40 text-xs leading-relaxed text-slate-200 flex flex-col gap-2">
+        const explanationHTML = isAnswered ? `
+          <div class="mt-2 p-3.5 rounded-2xl bg-slate-950/95 border border-emerald-500/40 text-xs leading-relaxed text-slate-200 flex flex-col gap-2">
             <div class="flex items-center justify-between">
-              <span class="font-extrabold ${chosen === q.answerIndex ? 'text-emerald-400' : 'text-rose-400'}">
-                ${chosen === q.answerIndex ? '🎯 BINGO! +25 XP (+1.00 Mark)' : `💥 OOPS! -0.33 Mark • Ans: Option ${letters[q.answerIndex]}`}
+              <span class="font-extrabold text-sm ${chosen === q.answerIndex ? 'text-emerald-400' : 'text-rose-400'}">
+                ${chosen === q.answerIndex ? '🎯 BINGO! +25 XP (+1.00 Mark)' : `💥 OOPS! -0.33 Mark • Correct: Option ${letters[q.answerIndex]}`}
               </span>
-              <span class="text-[10px] text-slate-400">Swipe or Tap Done</span>
+              <span class="text-[10px] text-slate-400">Read & Tap Done</span>
             </div>
-            <div class="text-slate-300 text-xs">${q.explanation}</div>
+            <div class="text-slate-300 text-xs leading-relaxed">
+              <strong class="text-white">Detailed Analytical Solution:</strong> ${q.explanation}
+            </div>
+            ${q.smartTip ? `
+              <div class="bg-indigo-950/70 border border-indigo-500/30 rounded-xl px-3 py-2 text-[11px] text-indigo-200">
+                <strong class="text-amber-300">🎯 Exam Smart Tip & Memory Hook:</strong> ${q.smartTip}
+              </div>
+            ` : ""}
             <button onclick="markDoneAndNext(${q.id}, ${idx})"
               class="done-btn-glow w-full mt-1 py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-400 text-slate-950 font-black text-xs tracking-wide shadow-lg">
               ✅ DONE READING (+10 XP) • NEXT SHORT ↓
@@ -1265,64 +1736,98 @@
           </div>
         ` : "";
 
+        const slide = document.createElement("section");
+        slide.className = "short-slide w-full";
+        slide.dataset.qid = q.id;
+
         slide.innerHTML = `
-          <div class="w-full max-w-lg h-full max-h-[680px] bg-slate-900/90 border border-slate-800 rounded-3xl p-4 sm:p-5 flex flex-col justify-between relative shadow-2xl overflow-y-auto no-scrollbar">
-            <!-- Top Card Meta & Quick Solver Trigger -->
-            <div class="flex flex-col gap-2.5">
-              <div class="flex items-center justify-between gap-2">
-                <div class="flex items-center gap-1.5 flex-wrap">
-                  <span class="text-[10px] font-bold px-2 py-0.5 rounded-md bg-blue-500/20 text-blue-300 border border-blue-500/30">${q.sourceTag}</span>
-                  <span class="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-slate-800 text-slate-300">${q.subject}</span>
+          <div class="w-full max-w-xl h-full max-h-[690px] flex items-center gap-2.5 justify-center">
+            <!-- Main Question Card -->
+            <div class="flex-1 h-full bg-slate-900/95 border border-slate-800/90 rounded-3xl p-4 sm:p-5 flex flex-col justify-between shadow-2xl overflow-y-auto no-scrollbar">
+              <div class="flex flex-col gap-2.5">
+                <div class="flex items-center justify-between gap-2">
+                  <div class="flex items-center gap-1.5 flex-wrap">
+                    <span class="text-[10px] font-bold px-2 py-0.5 rounded-md border ${badgeColor}">${q.sourceTag}</span>
+                    <span class="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-slate-800 text-slate-300">${q.subject}</span>
+                  </div>
+                  <span class="text-[11px] font-bold text-slate-400">Short ${idx + 1} / ${currentFeed.length}</span>
                 </div>
-                <span class="text-[11px] font-bold text-slate-400">${idx + 1} / ${currentFeed.length}</span>
+
+                <h2 class="text-sm sm:text-base font-bold text-white leading-snug">
+                  <span class="text-cyan-400 mr-1">Q${q.id}.</span>${q.question}
+                </h2>
+
+                <!-- 1-Tap On-Card Smart Solver Bar -->
+                <div class="flex items-center gap-2">
+                  <button onclick="openCalcForQuestion(${q.id})" class="bg-indigo-950/90 hover:bg-indigo-900 text-indigo-300 border border-indigo-500/40 rounded-xl px-3 py-1 text-[11px] font-bold flex items-center gap-1.5 shadow">
+                    <span>⚡ 1-Tap Smart Solver / Integrator</span>
+                  </button>
+                </div>
               </div>
 
-              <!-- Question Prompt -->
-              <h2 class="text-sm sm:text-base font-bold text-white leading-snug">
-                <span class="text-cyan-400 mr-1">Q${q.id}.</span>${q.question}
-              </h2>
-
-              <!-- 1-Tap On-Screen Solver Trigger Bar -->
-              <div class="flex items-center gap-2">
-                <button onclick="openCalcForQuestion(${q.id})" class="bg-indigo-950/90 hover:bg-indigo-900 text-indigo-300 border border-indigo-500/40 rounded-xl px-2.5 py-1 text-[11px] font-semibold flex items-center gap-1">
-                  ⚡ Open On-Screen Calculator / Integrator
-                </button>
-                <button onclick="useFiftyFifty(${q.id})" class="bg-slate-800 hover:bg-slate-700 text-amber-300 border border-slate-700 rounded-xl px-2.5 py-1 text-[11px] font-semibold">
-                  💡 50:50
-                </button>
-                <button onclick="toggleBookmark(${q.id})" class="ml-auto bg-slate-800 hover:bg-slate-700 px-2.5 py-1 rounded-xl text-[11px] font-bold ${isSaved ? 'text-yellow-400' : 'text-slate-400'}">
-                  ${isSaved ? '★ Saved' : '☆ Save'}
-                </button>
+              <div class="flex flex-col gap-2 my-2">
+                ${optionsHTML}
               </div>
+
+              ${explanationHTML}
             </div>
 
-            <!-- Options Stack -->
-            <div class="flex flex-col gap-2 my-2">
-              ${optionsHTML}
-            </div>
+            <!-- Floating Right-Side YouTube Shorts Action Rail -->
+            <div class="flex flex-col items-center gap-2.5 shrink-0">
+              <button onclick="toggleBookmark(${q.id})" class="w-11 h-11 rounded-2xl bg-slate-900/90 hover:bg-slate-800 border border-slate-700 flex flex-col items-center justify-center text-xs shadow-lg ${isSaved ? 'text-yellow-400 border-yellow-500/50' : 'text-slate-300'}">
+                <span class="text-base leading-none">${isSaved ? '★' : '☆'}</span>
+                <span class="text-[9px] font-bold mt-0.5">Save</span>
+              </button>
 
-            <!-- Expandable Detailed Explanation & DONE Button -->
-            ${answerBoxHTML}
+              <button onclick="useFiftyFifty(${q.id})" class="w-11 h-11 rounded-2xl bg-slate-900/90 hover:bg-slate-800 border border-slate-700 flex flex-col items-center justify-center text-amber-300 text-xs shadow-lg">
+                <span class="text-sm leading-none">💡</span>
+                <span class="text-[9px] font-bold mt-0.5">50:50</span>
+              </button>
+
+              <button onclick="openCalcForQuestion(${q.id})" class="w-11 h-11 rounded-2xl bg-indigo-950/90 hover:bg-indigo-900 border border-indigo-500/40 flex flex-col items-center justify-center text-indigo-300 text-xs shadow-lg">
+                <span class="text-sm leading-none">🧮</span>
+                <span class="text-[9px] font-bold mt-0.5">Solve</span>
+              </button>
+
+              <button onclick="shareQuestion(${q.id})" class="w-11 h-11 rounded-2xl bg-slate-900/90 hover:bg-slate-800 border border-slate-700 flex flex-col items-center justify-center text-cyan-300 text-xs shadow-lg">
+                <span class="text-sm leading-none">📤</span>
+                <span class="text-[9px] font-bold mt-0.5">Share</span>
+              </button>
+
+              <button onclick="scrollToSlide(${idx - 1})" class="w-11 h-9 rounded-xl bg-slate-900/90 hover:bg-slate-800 border border-slate-800 flex items-center justify-center text-slate-400 text-xs">
+                ▲
+              </button>
+              <button onclick="scrollToSlide(${idx + 1})" class="w-11 h-9 rounded-xl bg-slate-900/90 hover:bg-slate-800 border border-slate-800 flex items-center justify-center text-slate-400 text-xs">
+                ▼
+              </button>
+            </div>
           </div>
         `;
 
         feed.appendChild(slide);
       });
 
-      feed.scrollTop = currentScroll;
+      feed.scrollTop = prevScroll;
     }
 
-    // Track current visible card on scroll
+    // Track visible slide on scroll
     document.getElementById("shorts-feed").addEventListener("scroll", (e) => {
       const feed = e.target;
       const idx = Math.round(feed.scrollTop / feed.clientHeight);
-      if (currentFeed[idx]) {
-        activeQuestionId = currentFeed[idx].id;
-      }
+      if (currentFeed[idx]) activeQuestionId = currentFeed[idx].id;
+    });
+
+    // Keyboard Up/Down navigation
+    window.addEventListener("keydown", (e) => {
+      if (["INPUT", "TEXTAREA", "SELECT"].includes(document.activeElement.tagName)) return;
+      const feed = document.getElementById("shorts-feed");
+      const idx = Math.round(feed.scrollTop / feed.clientHeight);
+      if (e.key === "ArrowDown") { e.preventDefault(); scrollToSlide(idx + 1); }
+      if (e.key === "ArrowUp") { e.preventDefault(); scrollToSlide(idx - 1); }
     });
 
     // =========================================================================
-    // 6. SMART SOLVER, SYMBOLIC INTEGRATOR & SCRATCHPAD ENGINE
+    // 6. ON-SCREEN SMART CALCULATOR, SYMBOLIC INTEGRATOR & SCRATCHPAD
     // =========================================================================
     function openCalcDrawer() {
       document.getElementById("calc-drawer").classList.remove("hidden");
@@ -1362,7 +1867,7 @@
         setAndRunCmd(q.smartCmd);
       } else {
         document.getElementById("nl-output").textContent =
-          `[Q${q.id} Quick Note]\n${q.explanation}`;
+          `⚡ Auto-Analysis for Q${q.id} (${q.sourceTag}):\n• ${q.explanation}\n• ${q.smartTip || ""}`;
       }
     }
 
@@ -1374,7 +1879,7 @@
       try {
         const lower = raw.toLowerCase();
 
-        // 1. Symbolic Definite / Indefinite Integral: "integrate 6*(1-y) wrt y from x to 1"
+        // 1. Symbolic Definite / Indefinite Integral
         if (lower.startsWith("integrate ")) {
           const mDef = raw.match(/integrate\s+(.+?)\s+wrt\s+([a-zA-Z])\s+from\s+(.+?)\s+to\s+(.+)/i);
           if (mDef) {
@@ -1399,7 +1904,7 @@
           }
         }
 
-        // 2. PERT Command: "pert 9 15 21 target 13"
+        // 2. PERT Command
         if (lower.startsWith("pert")) {
           const nums = raw.match(/-?\d+(\.\d+)?/g).map(Number);
           const [to, tm, tp, ts] = nums;
@@ -1416,7 +1921,7 @@
           return;
         }
 
-        // 3. Bayes Command: "bayes 0.001 0.999 0.002"
+        // 3. Bayes Command
         if (lower.startsWith("bayes")) {
           const nums = raw.match(/\d+(\.\d+)?/g).map(Number);
           const [pD, pPosD, pPosNoD] = nums;
@@ -1433,7 +1938,7 @@
           return;
         }
 
-        // 4. Bipartite 6-Letter Word Split & Reverse: "split reverse VERBAL RELATE BASINT COLOUR"
+        // 4. Bipartite 6-Letter Word Split & Reverse
         if (lower.startsWith("split reverse")) {
           const words = raw.replace(/split reverse/i, "").trim().split(/\s+/);
           const lines = words.map((w) => {
@@ -1446,31 +1951,29 @@
           return;
         }
 
-        // 5. Fallback to Math.js / Nerdamer Evaluator
+        // 5. Fallback Math.js Evaluation
         const res = math.evaluate(raw);
         out.textContent = `= ${res}`;
       } catch (err) {
-        out.textContent = `Solver Hint: Try "integrate 6*(1-y) wrt y from x to 1", "pert 9 15 21 target 13", or standard math expressions.`;
+        out.textContent = raw;
       }
     }
 
     function startVoiceCommand() {
       const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
       if (!SpeechRec) {
-        alert("Speech recognition is supported in Chrome/Edge/Android browsers.");
+        alert("Voice input works in Chrome, Edge, and Android browsers.");
         return;
       }
       const rec = new SpeechRec();
       rec.lang = "en-IN";
       rec.onresult = (e) => {
-        const transcript = e.results[0][0].transcript;
-        document.getElementById("nl-input").value = transcript;
+        document.getElementById("nl-input").value = e.results[0][0].transcript;
         runNaturalCommand();
       };
       rec.start();
     }
 
-    // Tab 2 Dedicated Box Handlers
     function runSymbolicBox(mode) {
       const expr = document.getElementById("sym-expr").value.trim();
       const v = document.getElementById("sym-var").value.trim() || "x";
@@ -1480,15 +1983,13 @@
 
       try {
         if (mode === "diff") {
-          const d = nerdamer(`diff(${expr}, ${v})`).toString();
-          out.textContent = `d/d${v} [${expr}] = ${d}`;
+          out.textContent = `d/d${v} [${expr}] = ${nerdamer(`diff(${expr}, ${v})`).toString()}`;
         } else {
           if (low !== "" && high !== "") {
             const defRes = nerdamer(`defint(${expr}, ${low}, ${high}, ${v})`).toString();
             out.textContent = `∫(${low} to ${high}) [${expr}] d${v} = ${nerdamer(`expand(${defRes})`).toString()}`;
           } else {
-            const ind = nerdamer(`integrate(${expr}, ${v})`).toString();
-            out.textContent = `∫ [${expr}] d${v} = ${ind} + C`;
+            out.textContent = `∫ [${expr}] d${v} = ${nerdamer(`integrate(${expr}, ${v})`).toString()} + C`;
           }
         }
       } catch (e) {
@@ -1518,25 +2019,15 @@
         `P(D|+) = ${post.toFixed(4)} (${(post * 100).toFixed(1)}%)`;
     }
 
-    // Tab 3 Scientific Keypad
-    function sciTap(val) {
-      document.getElementById("sci-display").value += val;
-    }
-    function sciClear() {
-      document.getElementById("sci-display").value = "";
-    }
+    function sciTap(val) { document.getElementById("sci-display").value += val; }
+    function sciClear() { document.getElementById("sci-display").value = ""; }
     function sciEval() {
       const el = document.getElementById("sci-display");
-      try {
-        el.value = math.evaluate(el.value);
-      } catch (e) {
-        el.value = "Error";
-      }
+      try { el.value = math.evaluate(el.value); } catch (e) { el.value = "Error"; }
     }
 
-    // Tab 4 Scratchpad & 5-Seat North Row Helper
     const PEOPLE = ["Empty", "Daksh", "Nayan", "Oman", "Likith", "Umang"];
-    let rowSeats = [1, 2, 3, 4, 5]; // Pre-loaded with Q58 solution order
+    let rowSeats = [1, 2, 3, 4, 5];
 
     function renderSeatingRow() {
       const box = document.getElementById("seating-slots");
@@ -1558,7 +2049,6 @@
       renderSeatingRow();
     }
 
-    // Touch Canvas Drawing
     const canvas = document.getElementById("scratch-canvas");
     const ctx = canvas.getContext("2d");
     let drawing = false;
@@ -1594,7 +2084,7 @@
       ctx.clearRect(0, 0, canvas.width, canvas.height);
     }
 
-    // Initialize App
+    // Boot Arena
     renderSeatingRow();
     loadExternalJSON();
   </script>
