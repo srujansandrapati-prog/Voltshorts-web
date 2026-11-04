@@ -1,0 +1,967 @@
+[
+  {
+    "id": 1,
+    "exam": "UPSC ESE",
+    "sourceTag": "UPSC ESE Prelims 2024",
+    "subject": "Engineering Maths",
+    "question": "The probability density function of an exponential distribution is f(x) = λe^(-λx) for x ≥ 0 (and 0 for x < 0). What is the standard deviation of this distribution?",
+    "options": [
+      "1 / λ",
+      "1 / λ²",
+      "2 / λ",
+      "3 / λ²"
+    ],
+    "answerIndex": 0,
+    "explanation": "For an exponential distribution f(x) = λe^(-λx), the k-th raw moment is E[X^k] = k! / λ^k. Thus, the mean is E[X] = 1/λ and the second moment is E[X²] = 2/λ². The variance is Var(X) = E[X²] - (E[X])² = 2/λ² - 1/λ² = 1/λ². Taking the square root gives the standard deviation σ = 1/λ.",
+    "smartTip": "Trap Alert: 1/λ² is the Variance, whereas 1/λ is BOTH the Mean and the Standard Deviation of an exponential distribution!",
+    "smartCmd": "exponential distribution L"
+  },
+  {
+    "id": 2,
+    "exam": "UPSC ESE",
+    "sourceTag": "UPSC ESE Prelims 2024",
+    "subject": "Engineering Maths",
+    "question": "Suppose 0.1% of people in an area have disease D. A screening test gives a positive result with 99.9% probability for a person who has D, and with 0.2% probability (false positive) for a person who does not have D. What is the approximate probability that a person who tests positive actually has the disease?",
+    "options": [
+      "1 / 3",
+      "1 / 4",
+      "2 / 3",
+      "5 / 6"
+    ],
+    "answerIndex": 0,
+    "explanation": "By Bayes' Theorem: Let E1 be having disease D (P(E1) = 0.001) and E2 be not having D (P(E2) = 0.999). P(+|E1) = 0.999 and P(+|E2) = 0.002. Thus, P(E1|+) = (0.001 × 0.999) / [(0.001 × 0.999) + (0.999 × 0.002)]. Canceling 0.999 from numerator and denominator gives 0.001 / (0.001 + 0.002) = 1/3 (approx 33.3%).",
+    "smartTip": "Shortcut: Notice how 0.999 appears in both terms! Cancel 0.999 immediately to get 0.001 / (0.001 + 0.002) = 1/3 in 5 seconds.",
+    "smartCmd": "bayes 0.001 0.999 0.002"
+  },
+  {
+    "id": 3,
+    "exam": "UPSC ESE",
+    "sourceTag": "UPSC ESE Prelims 2024",
+    "subject": "Engineering Maths",
+    "question": "Let random variables X and Y have joint density function f(x,y) = c(1 - y) for 0 ≤ x ≤ y ≤ 1, and 0 otherwise. What is the marginal density function f_X(x) for 0 ≤ x ≤ 1?",
+    "options": [
+      "6(1/2 - x - x²/2)",
+      "6(1/2 + x + x²/2)",
+      "6(1/2 + x - x²/2)",
+      "6(1/2 - x + x²/2)"
+    ],
+    "answerIndex": 3,
+    "explanation": "Step 1: Find c by integrating f(x,y) over 0 ≤ x ≤ y ≤ 1. Inner integral of (1 - y) dy from y = x to 1 is [y - y²/2]_x^1 = 1/2 - x + x²/2. Integrating from x = 0 to 1 gives c(1/2 - 1/2 + 1/6) = c/6 = 1, so c = 6. Step 2: The marginal density f_X(x) is the integral over y from x to 1 of 6(1 - y) dy = 6(1/2 - x + x²/2).",
+    "smartTip": "Boundary check trick: At x = 1, the upper and lower limits of y (from x to 1) coincide, so f_X(1) MUST equal 0. Only 6(1/2 - 1 + 1/2) = 0 satisfies this!",
+    "smartCmd": "integrate 6*(1-y) wrt y from x to 1"
+  },
+  {
+    "id": 4,
+    "exam": "UPSC ESE",
+    "sourceTag": "UPSC ESE & TGPSC AEE 2023",
+    "subject": "Project Management",
+    "question": "Which of the following statements regarding PERT and CPM is INCORRECT?",
+    "options": [
+      "PERT is suitable for projects having probabilistic time estimates.",
+      "CPM is suitable for projects having deterministic activities.",
+      "Both PERT and CPM are event-oriented network models.",
+      "PERT uses the slack concept, while CPM uses the float concept."
+    ],
+    "answerIndex": 2,
+    "explanation": "PERT (Program Evaluation and Review Technique) is an event-oriented network model using a probabilistic 3-time estimate approach, whereas CPM (Critical Path Method) is an activity-oriented network model using a deterministic 1-time estimate approach. Therefore, claiming both are event-oriented is incorrect.",
+    "smartTip": "Memory Hook: P-E-R-T has 'E' for Event-oriented & Probabilistic; C-P-M is Activity-oriented & Deterministic (Cost crashing)."
+  },
+  {
+    "id": 5,
+    "exam": "UPSC ESE",
+    "sourceTag": "UPSC ESE Prelims 2023",
+    "subject": "Project Management",
+    "question": "Which one of the following statements is CORRECT regarding PERT?",
+    "options": [
+      "PERT is commonly used in repetitive routine construction work.",
+      "PERT is suitable for estimating activity duration where high levels of uncertainty exist.",
+      "PERT does not provide time duration.",
+      "PERT is a deterministic approach where project crashing is standard."
+    ],
+    "answerIndex": 1,
+    "explanation": "Developed by the U.S. Navy in the late 1950s for the Polaris Fleet Ballistic Missile project, PERT is designed for novel Research & Development (R&D) projects where high levels of uncertainty exist. Each activity duration follows a Beta (β) probability distribution.",
+    "smartTip": "Individual activities in PERT follow a Beta (β) distribution, while the total project duration along the critical path follows a Normal distribution (by Central Limit Theorem)."
+  },
+  {
+    "id": 6,
+    "exam": "UPSC ESE",
+    "sourceTag": "UPSC ESE Prelims 2023",
+    "subject": "Project Management",
+    "question": "Identify the correct characterization of PERT and CPM from the following options:",
+    "options": [
+      "CPM is developed especially for scheduling uncertain research and development work.",
+      "PERT is developed for routine quality control laboratory work at a construction site.",
+      "PERT is a method of statistically evaluating project duration over a time-sensitive domain.",
+      "Project crashing is possible in PERT but impossible in CPM."
+    ],
+    "answerIndex": 2,
+    "explanation": "PERT statistically evaluates project duration over a time-sensitive domain using three time estimates (optimistic, most likely, pessimistic), assuming cost is directly proportional to time. Project crashing (time-cost trade-off) is a feature of CPM, not PERT.",
+    "smartTip": "Crashing = Compressing time by adding resources/cost = Always CPM!"
+  },
+  {
+    "id": 7,
+    "exam": "UPSC ESE",
+    "sourceTag": "UPSC ESE Prelims PYQ",
+    "subject": "Project Management",
+    "question": "Consider the following statements: (1) In Work Breakdown Structure (WBS), a top-down approach is adopted. (2) Duration along the critical path is the shortest duration permissible to complete the project. (3) If an activity has zero slack, it lies on the critical path. Which are correct?",
+    "options": [
+      "1 and 2 only",
+      "2 and 3 only",
+      "1 and 3 only",
+      "1, 2, and 3"
+    ],
+    "answerIndex": 3,
+    "explanation": "All three statements are correct. WBS decomposes complex projects top-to-bottom into systems, sub-systems, and work packages. The critical path is the longest path through the network graph, which determines the shortest permissible duration needed to complete the entire project. Activities on it have zero slack.",
+    "smartTip": "Paradox to remember: Critical Path = LONGEST path in the network = SHORTEST possible time to complete the whole project."
+  },
+  {
+    "id": 8,
+    "exam": "UPSC ESE",
+    "sourceTag": "UPSC ESE Prelims PYQ",
+    "subject": "Project Management",
+    "question": "Time estimates of an activity in a PERT network are: Optimistic time t_o = 9 days, Pessimistic time t_p = 21 days, and Most likely time t_m = 15 days. What is the approximate probability of completing this activity in 13 days?",
+    "options": [
+      "16%",
+      "50%",
+      "68%",
+      "84%"
+    ],
+    "answerIndex": 0,
+    "explanation": "Expected time t_e = (t_o + 4t_m + t_p)/6 = (9 + 60 + 21)/6 = 15 days. Standard deviation σ = (t_p - t_o)/6 = (21 - 9)/6 = 2 days. For target T_s = 13 days, the standard normal Z-score is Z = (13 - 15)/2 = -1.0. Since P(-1 ≤ Z ≤ 1) ≈ 68.26%, the lower tail probability P(Z ≤ -1) is 0.50 - 0.3413 ≈ 15.87% ≈ 16%.",
+    "smartTip": "Memorize the 3 Z-scores for ESE: Z = 0 → 50%; Z = +1 → 84%; Z = -1 → 16%; Z = +2 → 97.7%.",
+    "smartCmd": "pert 9 15 21 target 13"
+  },
+  {
+    "id": 9,
+    "exam": "UPSC ESE",
+    "sourceTag": "UPSC ESE Paper-I",
+    "subject": "Project Management",
+    "question": "Which project management tool is deterministic, activity-oriented, and specifically used for time-cost trade-off (crashing) along the critical path?",
+    "options": [
+      "PERT (Program Evaluation and Review Technique)",
+      "CPM (Critical Path Method)",
+      "Gantt Milestone Chart",
+      "VED Inventory Analysis"
+    ],
+    "answerIndex": 1,
+    "explanation": "CPM (Critical Path Method) is an activity-oriented deterministic tool developed by DuPont that explicitly models normal and crash times/costs, enabling optimal project crashing.",
+    "smartTip": "Crash Cost Slope = (Crash Cost - Normal Cost) / (Normal Time - Crash Time)."
+  },
+  {
+    "id": 10,
+    "exam": "UPSC ESE",
+    "sourceTag": "UPSC ESE Paper-I",
+    "subject": "Quality & Design",
+    "question": "What is the primary objective of Value Engineering?",
+    "options": [
+      "To increase product price by adding luxury features.",
+      "To improve function while reducing cost without negatively affecting quality.",
+      "To reduce cost by substituting lower-grade unsafe materials.",
+      "To eliminate inspection stages in production."
+    ],
+    "answerIndex": 1,
+    "explanation": "Value (V) is defined as Function (F) divided by Cost (C): V = F/C. Value Engineering systematically aims to improve functionality while reducing unnecessary cost without ever compromising product quality or reliability.",
+    "smartTip": "Value Engineering ≠ Cheap Cost-Cutting! Quality and safety are never compromised in Value Engineering."
+  },
+  {
+    "id": 11,
+    "exam": "UPSC ESE",
+    "sourceTag": "UPSC ESE Paper-I",
+    "subject": "Quality & Design",
+    "question": "In industrial quality control, what does the Six Sigma (6σ) methodology primarily aim to reduce?",
+    "options": [
+      "Employee wages and overhead",
+      "Process variation and manufacturing/service defects",
+      "Preventive maintenance schedules",
+      "Factor of safety in structural design"
+    ],
+    "answerIndex": 1,
+    "explanation": "Pioneered by Motorola, Six Sigma aims to reduce process variation (standard deviation σ) and defects so that a process produces no more than 3.4 defects per million opportunities (DPMO), achieving 99.99966% defect-free yield.",
+    "smartTip": "Six Sigma uses DMAIC (Define, Measure, Analyze, Improve, Control) for existing processes and DMADV for new designs."
+  },
+  {
+    "id": 12,
+    "exam": "UPSC ESE",
+    "sourceTag": "UPSC ESE Paper-I",
+    "subject": "Quality & Design",
+    "question": "In engineering design, how is the Factor of Safety (FoS) defined?",
+    "options": [
+      "Ratio of working stress to ultimate stress",
+      "Ratio of maximum (ultimate or yield) stress to allowable working stress",
+      "Ratio of elastic strain to plastic strain",
+      "Product of reliability and availability"
+    ],
+    "answerIndex": 1,
+    "explanation": "Factor of Safety (FoS) = Maximum Strength/Stress (Yield Stress for ductile materials or Ultimate Stress for brittle materials) divided by Allowable Working Stress. It must be greater than 1 to provide a safety buffer against unexpected loads.",
+    "smartTip": "Ductile materials use Yield Stress in the numerator; Brittle materials use Ultimate Tensile Stress."
+  },
+  {
+    "id": 13,
+    "exam": "UPSC ESE",
+    "sourceTag": "UPSC ESE Paper-I",
+    "subject": "Quality & Design",
+    "question": "Which term defines the probability that a system performs its intended function adequately for a given period of time under stated operating conditions?",
+    "options": [
+      "Maintainability",
+      "Reliability",
+      "Quality Assurance",
+      "Redundancy"
+    ],
+    "answerIndex": 1,
+    "explanation": "Reliability R(t) = e^(-λt) is the probability that a component or system performs its intended function without failure for a specified period t under specified operating conditions.",
+    "smartTip": "Series system reliability decreases (R = R1 × R2), while Parallel redundancy increases reliability!"
+  },
+  {
+    "id": 14,
+    "exam": "UPSC ESE",
+    "sourceTag": "UPSC ESE Paper-I",
+    "subject": "Quality & Design",
+    "question": "What does the international standard ISO 9001 specifically relate to?",
+    "options": [
+      "Environmental Management Systems",
+      "Quality Management Systems (QMS)",
+      "Information Security Management",
+      "Occupational Health and Safety"
+    ],
+    "answerIndex": 1,
+    "explanation": "ISO 9001 specifies requirements for a Quality Management System (QMS). By comparison, ISO 14001 covers Environmental Management, ISO 27001 covers Information Security, and ISO 45001 covers Occupational Health & Safety.",
+    "smartTip": "Quick ISO Matrix: ISO 9000 = Quality; ISO 14000 = Environment; ISO 27001 = Cyber Security; ISO 50001 = Energy Management."
+  },
+  {
+    "id": 15,
+    "exam": "UPSC ESE",
+    "sourceTag": "UPSC ESE Paper-I",
+    "subject": "Environment & Disaster",
+    "question": "How is 'Sustainability' (Sustainable Development) formally defined in engineering and environmental ethics?",
+    "options": [
+      "Maximizing industrial extraction using fossil fuels.",
+      "Meeting the needs of the present without compromising the ability of future generations to meet their own needs.",
+      "Replacing all human labor with automated systems.",
+      "Maintaining zero economic growth indefinitely."
+    ],
+    "answerIndex": 1,
+    "explanation": "Defined in the 1987 Brundtland Commission Report ('Our Common Future'), sustainable development means meeting present needs without compromising the ability of future generations to meet their own needs across economic, environmental, and social pillars.",
+    "smartTip": "Brundtland Report (1987) = 'Our Common Future' = Coined the classic definition of Sustainable Development."
+  },
+  {
+    "id": 16,
+    "exam": "UPSC ESE",
+    "sourceTag": "UPSC ESE 2019 Paper-I",
+    "subject": "Engineering Ethics",
+    "question": "Consider the following statements regarding 'Engineering Ethics': (1) It is the activity of understanding moral values. (2) It resolves moral issues and justifies moral judgments. (3) It refers to the set of specifically moral problems and issues related to Engineering. Which are correct?",
+    "options": [
+      "1 and 2 only",
+      "2 and 3 only",
+      "1 and 3 only",
+      "1, 2, and 3"
+    ],
+    "answerIndex": 3,
+    "explanation": "Asked in UPSC ESE 2019 Paper-I, all three statements are correct. Based on Mike W. Martin and Roland Schinzinger's standard textbook 'Ethics in Engineering', engineering ethics encompasses understanding moral values, resolving moral dilemmas, and justifying moral judgments in engineering.",
+    "smartTip": "In UPSC ESE Ethics, inclusive multi-statement definitions from Martin & Schinzinger usually have '1, 2, and 3' as correct."
+  },
+  {
+    "id": 17,
+    "exam": "UPSC ESE",
+    "sourceTag": "UPSC ESE Paper-I",
+    "subject": "Engineering Ethics",
+    "question": "In Engineering Ethics, what is the exact difference between the 'Normative Sense' and the 'Descriptive Sense'?",
+    "options": [
+      "Normative refers to what engineers actually believe without justification; Descriptive refers to what ought to be.",
+      "Normative studies morally desirable decisions/values and applies ethical codes; Descriptive refers to what specific engineers believe and act without justifying their beliefs.",
+      "Normative applies only to Civil Engineers; Descriptive applies to Electrical Engineers.",
+      "There is no difference between the two senses."
+    ],
+    "answerIndex": 1,
+    "explanation": "Normative ethics establishes norms or standards of what 'ought to be'—justifying moral values and applying professional codes. Descriptive ethics is purely empirical/factual, describing what specific engineers or groups believe or do without evaluating whether those beliefs are justified.",
+    "smartTip": "Normative = 'What Ought To Be' (Norms/Rules). Descriptive = 'What Is' (Describing behavior without judging)."
+  },
+  {
+    "id": 18,
+    "exam": "UPSC ESE",
+    "sourceTag": "UPSC ESE Paper-I",
+    "subject": "Engineering Ethics",
+    "question": "Which philosopher is primarily associated with 'Rights Ethics' (the theory that actions are wrong if they violate fundamental human moral rights)?",
+    "options": [
+      "J.S. Mill",
+      "John Locke",
+      "Aristotle",
+      "Jeremy Bentham"
+    ],
+    "answerIndex": 1,
+    "explanation": "John Locke (and later A.I. Melden) pioneered Rights Ethics. J.S. Mill and Jeremy Bentham are associated with Utilitarianism (greatest good for the greatest number), Immanuel Kant with Duty Ethics (Deontology), and Aristotle with Virtue Ethics.",
+    "smartTip": "Philosopher Match: John Locke → Rights Ethics; Immanuel Kant → Duty Ethics; Mill & Bentham → Utilitarianism; Aristotle → Virtue Ethics."
+  },
+  {
+    "id": 19,
+    "exam": "UPSC ESE",
+    "sourceTag": "UPSC ESE Paper-I",
+    "subject": "Engineering Ethics",
+    "question": "Which ethical view holds that the 'right action consists solely in producing one's own good'?",
+    "options": [
+      "Rule Utilitarianism",
+      "Ethical Egoism",
+      "Duty Ethics",
+      "Altruism"
+    ],
+    "answerIndex": 1,
+    "explanation": "Ethical Egoism (associated with Thomas Hobbes and Ayn Rand) claims that morality is purely about maximizing one's own self-interest. It directly contradicts engineering ethical codes, which require prioritizing public safety and welfare.",
+    "smartTip": "Egoism = Self-interest only; Utilitarianism = Overall societal good; Altruism = Selfless concern for others."
+  },
+  {
+    "id": 20,
+    "exam": "UPSC ESE",
+    "sourceTag": "UPSC ESE Paper-I",
+    "subject": "Engineering Ethics",
+    "question": "According to the standard Code of Ethics of Engineers (such as IEEE / NSPE), what must engineers hold paramount in the performance of their professional duties?",
+    "options": [
+      "Maximizing short-term corporate profit of the employer",
+      "The safety, health, and welfare of the public",
+      "Personal promotion and self-advertisement",
+      "Strict secrecy even when a design endangers human life"
+    ],
+    "answerIndex": 1,
+    "explanation": "The First Fundamental Canon of NSPE, IEEE, and FEANI engineering codes states: 'Engineers, in the fulfillment of their professional duties, shall hold paramount the safety, health, and welfare of the public.'",
+    "smartTip": "Whenever an ethics question pits 'Employer Loyalty/Confidentiality' against 'Public Safety', Public Safety ALWAYS wins!"
+  },
+  {
+    "id": 21,
+    "exam": "UPSC ESE",
+    "sourceTag": "UPSC ESE Paper-I",
+    "subject": "Engineering Ethics",
+    "question": "In administrative and engineering ethics, what is the distinction between Malfeasance, Misfeasance, and Nonfeasance?",
+    "options": [
+      "Malfeasance is an unlawful/wrongful act; Misfeasance is performing a lawful act improperly; Nonfeasance is failing to perform a required duty.",
+      "Malfeasance is failing to act; Misfeasance is an illegal bribe; Nonfeasance is a minor clerical error.",
+      "All three terms mean the exact same thing in public administration.",
+      "Nonfeasance applies only to private contractors."
+    ],
+    "answerIndex": 0,
+    "explanation": "Malfeasance is intentionally committing an illegal or wrongful act (e.g., taking a bribe). Misfeasance is performing a legal duty in an improper or negligent way. Nonfeasance is the failure/omission to act when under a legal or professional obligation to do so.",
+    "smartTip": "Prefix key: MAL = Bad/Illegal act; MIS = Mistake in a lawful act; NON = Not acting (omission)."
+  },
+  {
+    "id": 22,
+    "exam": "UPSC ESE",
+    "sourceTag": "UPSC ESE Paper-I",
+    "subject": "Engineering Ethics",
+    "question": "What is 'Plan-Stamping' in the engineering profession?",
+    "options": [
+      "Using CAD software to print blueprints",
+      "Unethically signing and sealing engineering drawings that were not prepared by the engineer or under their direct supervision",
+      "Obtaining ISO certification for a factory",
+      "Charging two clients for the same travel expense"
+    ],
+    "answerIndex": 1,
+    "explanation": "Plan-stamping is the unethical and unlawful practice where a licensed Professional Engineer (PE) signs and seals drawings or calculations that were neither prepared by them nor under their direct supervisory control. Charging two clients for the same expense is 'Double Dipping'.",
+    "smartTip": "Plan-Stamping = Rubber-stamping someone else's unsupervised blueprints; Double Dipping = Billing two clients for the same hours/expense."
+  },
+  {
+    "id": 23,
+    "exam": "UPSC ESE",
+    "sourceTag": "UPSC ESE Paper-I",
+    "subject": "Engineering Ethics",
+    "question": "Which term is defined as 'mental toughness or consistency while working on the path of duty despite severe challenges, rather than running away from challenges'?",
+    "options": [
+      "Trained Incapacity",
+      "Perseverance",
+      "Formalistic Impersonality",
+      "Ethnic Tradition"
+    ],
+    "answerIndex": 1,
+    "explanation": "Perseverance is steadfastness and mental toughness while executing one's duty despite severe obstacles. 'Trained Incapacity' (coined by Thorstein Veblen) refers to when rigid training makes an official unable to think beyond rules in new situations.",
+    "smartTip": "Also remember 'Trained Incapacity' (Veblen) and 'Formalistic Impersonality' (Max Weber)—both are favorite UPSC ESE bureaucracy terms!"
+  },
+  {
+    "id": 24,
+    "exam": "UPSC ESE",
+    "sourceTag": "UPSC ESE Paper-I",
+    "subject": "ICT & Current Affairs",
+    "question": "In asymmetric key cryptography, how are keys utilized to encrypt and decrypt a confidential message?",
+    "options": [
+      "A single secret key is shared between both parties to perform both operations.",
+      "The message is split into two halves encrypted with symmetric keys.",
+      "The sender encrypts using the receiver's public key, and the receiver decrypts using their own private key.",
+      "The sender encrypts using their private key, and the receiver decrypts using their public key."
+    ],
+    "answerIndex": 2,
+    "explanation": "In Public Key Infrastructure (PKI) for message confidentiality, the sender encrypts the plaintext using the recipient's publicly available key, and only the recipient can decrypt it using their matching secret private key.",
+    "smartTip": "Confidentiality = Encrypt with Receiver's Public Key. Digital Signature (Authentication) = Sign with Sender's Private Key!"
+  },
+  {
+    "id": 25,
+    "exam": "UPSC ESE",
+    "sourceTag": "UPSC ESE Paper-I",
+    "subject": "ICT & Current Affairs",
+    "question": "Under India's National Green Hydrogen Mission, what is the target for green hydrogen production capacity per annum by the year 2030?",
+    "options": [
+      "1 Million Metric Tonnes (MMT)",
+      "5 Million Metric Tonnes (MMT)",
+      "15 Million Metric Tonnes (MMT)",
+      "25 Million Metric Tonnes (MMT)"
+    ],
+    "answerIndex": 1,
+    "explanation": "Approved by the Union Cabinet, the National Green Hydrogen Mission targets 5 Million Metric Tonnes (MMT) per annum of Green Hydrogen production capacity by 2030, along with adding ~125 GW of associated renewable energy capacity.",
+    "smartTip": "Remember the 2030 Green Hydrogen numbers: 5 MMT/year production + 125 GW renewable capacity + 50 MMT/year CO2 abatement."
+  },
+  {
+    "id": 26,
+    "exam": "UPSC ESE",
+    "sourceTag": "UPSC ESE Paper-I",
+    "subject": "Environment & Disaster",
+    "question": "What is the primary function of the 'Loss and Damage Fund' formally operationalized on the opening day of the COP28 climate summit?",
+    "options": [
+      "Financing fusion energy technology in developed nations",
+      "Compensating corporate carbon credits",
+      "Providing financial assistance to developing countries vulnerable to climate disasters",
+      "Funding maritime earthquake search operations"
+    ],
+    "answerIndex": 2,
+    "explanation": "First agreed at COP27 (Sharm el-Sheikh) and operationalized at COP28 (Dubai), the Loss and Damage Fund (hosted initially by the World Bank) provides financial support to developing countries hit by unavoidable climate change disasters.",
+    "smartTip": "COP27 = Loss & Damage Fund agreed; COP28 (UAE) = Loss & Damage Fund operationalized."
+  },
+  {
+    "id": 27,
+    "exam": "UPSC ESE",
+    "sourceTag": "UPSC ESE Paper-I",
+    "subject": "Environment & Disaster",
+    "question": "Which international treaty-based secretariat administers the global response to climate change, including the Paris Agreement and Nationally Determined Contributions (NDCs)?",
+    "options": [
+      "United Nations Environment Programme (UNEP)",
+      "United Nations Framework Convention on Climate Change (UNFCCC)",
+      "World Meteorological Organization (WMO)",
+      "International Energy Agency (IEA)"
+    ],
+    "answerIndex": 1,
+    "explanation": "Headquartered in Bonn, Germany, the UNFCCC secretariat administers the 1992 Climate Convention, the 1997 Kyoto Protocol, and the 2015 Paris Agreement (including national NDCs).",
+    "smartTip": "Bonus HQ Fact: The International Solar Alliance (ISA) is headquartered in Gurugram, Haryana, India!"
+  },
+  {
+    "id": 28,
+    "exam": "UPSC ESE",
+    "sourceTag": "UPSC ESE Paper-I",
+    "subject": "ICT & Current Affairs",
+    "question": "What is the primary objective of the PM Gati Shakti National Master Plan launched by the Government of India?",
+    "options": [
+      "Providing direct cash subsidies to MSMEs",
+      "Digitalizing rural agricultural land records",
+      "Coordinated, multimodal planning and execution of infrastructure connectivity projects",
+      "Accelerating rural vaccination campaigns"
+    ],
+    "answerIndex": 2,
+    "explanation": "PM Gati Shakti is a GIS-based digital platform (built by BISAG-N) integrating 16 ministries (Railways, Roads, Ports, Power, Telecom, etc.) for synchronized multimodal infrastructure planning and reducing logistics costs.",
+    "smartTip": "Gati Shakti relies on 7 Engines: Roads, Railways, Airports, Ports, Mass Transport, Waterways, and Logistics Infrastructure."
+  },
+  {
+    "id": 29,
+    "exam": "UPSC ESE",
+    "sourceTag": "UPSC ESE Paper-I",
+    "subject": "Environment & Disaster",
+    "question": "The transitional phase of the European Union's Carbon Border Adjustment Mechanism (EU CBAM) focuses initially on which carbon-intensive goods?",
+    "options": [
+      "Textiles, Leather, and Footwear",
+      "Pharmaceuticals and Medical Devices",
+      "Cement, Iron and Steel, Aluminum, Fertilizers, Electricity, and Hydrogen",
+      "Consumer Electronics and Semiconductors"
+    ],
+    "answerIndex": 2,
+    "explanation": "EU CBAM places a carbon price on imports of six carbon-intensive sectors to prevent 'carbon leakage': Cement, Iron & Steel, Aluminum, Fertilizers, Electricity, and Hydrogen.",
+    "smartTip": "Remember the 6 EU CBAM sectors: Cement, Steel, Aluminum, Fertilizers, Electricity, and Hydrogen."
+  },
+  {
+    "id": 30,
+    "exam": "UPSC ESE",
+    "sourceTag": "UPSC ESE & TGPSC AEE",
+    "subject": "ICT & Current Affairs",
+    "question": "In the context of India's Digital Public Infrastructure (DPI), what does 'UPI' stand for, and which platform was among the earliest to launch 'UPI LITE' payments?",
+    "options": [
+      "Universal Payment Integration; State Bank of India",
+      "Unified Payments Interface; Paytm Payments Bank / Airtel Payments Bank",
+      "Unified Portal for Banking; HDFC Bank",
+      "Unique Payment Identifier; ICICI Bank"
+    ],
+    "answerIndex": 1,
+    "explanation": "UPI stands for Unified Payments Interface (developed by NPCI), and UPI LITE was rolled out for low-value on-device transactions without a UPI PIN by early adopter payments banks including Paytm Payments Bank and Airtel Payments Bank.",
+    "smartTip": "UPI LITE enables fast, low-value transactions using an on-device wallet without requiring a UPI PIN."
+  },
+  {
+    "id": 31,
+    "exam": "TGPSC",
+    "sourceTag": "TGPSC AEE GK",
+    "subject": "ICT & Current Affairs",
+    "question": "The Unique Identification Authority of India (UIDAI) works under which Union Ministry?",
+    "options": [
+      "Ministry of Home Affairs",
+      "Ministry of Finance",
+      "Ministry of Electronics and Information Technology (MeitY)",
+      "Ministry of Statistics and Programme Implementation"
+    ],
+    "answerIndex": 2,
+    "explanation": "UIDAI is a statutory authority established in 2016 and functions under the Ministry of Electronics and Information Technology (MeitY).",
+    "smartTip": "Note: The National Population Register (NPR) & Census fall under the Ministry of Home Affairs, while UIDAI operates under MeitY!"
+  },
+  {
+    "id": 32,
+    "exam": "TGPSC",
+    "sourceTag": "TGPSC General Studies",
+    "subject": "Environment & Disaster",
+    "question": "The Stockholm Convention is a legally binding global treaty designed to protect human health and the environment from what?",
+    "options": [
+      "Ozone-depleting CFCs",
+      "Persistent Organic Pollutants (POPs)",
+      "Transboundary movements of hazardous wastes",
+      "Greenhouse gas emissions from aviation"
+    ],
+    "answerIndex": 1,
+    "explanation": "Adopted in 2001, the Stockholm Convention regulates and eliminates Persistent Organic Pollutants (POPs) such as DDT, Aldrin, and PCBs that persist in the environment and bioaccumulate in food chains.",
+    "smartTip": "Treaty Trio: Basel = Hazardous Waste movement; Rotterdam = Prior Informed Consent for chemicals; Stockholm = POPs."
+  },
+  {
+    "id": 33,
+    "exam": "TGPSC",
+    "sourceTag": "TGPSC AEE 21 May 2023",
+    "subject": "Environment & Disaster",
+    "question": "Which of the following options contains the correct order of flow of energy in an ecosystem?",
+    "options": [
+      "Producers → Sunlight → Herbivores → Carnivores → Top Carnivores",
+      "Sunlight → Herbivores → Producers → Carnivores → Top Carnivores",
+      "Sunlight → Producers → Herbivores → Carnivores → Top Carnivores",
+      "Sunlight → Top Carnivores → Carnivores → Producers → Herbivores"
+    ],
+    "answerIndex": 2,
+    "explanation": "Asked in TGPSC AEE (21 May 2023, Q.15): Energy flows unidirectionally from Sunlight to autotrophic Producers (plants/algae), then to primary consumers (Herbivores), secondary consumers (Carnivores), and apex Top Carnivores.",
+    "smartTip": "Lindeman's 10% Law: Only 10% of energy is transferred from one trophic level to the next, and energy flow is ALWAYS unidirectional!"
+  },
+  {
+    "id": 34,
+    "exam": "TGPSC",
+    "sourceTag": "TGPSC AEE 09 May 2023",
+    "subject": "Environment & Disaster",
+    "question": "Which of the following types of Ecology looks at the smallest fundamental levels of life, that is, the cellular level?",
+    "options": [
+      "Microbial Ecology",
+      "Landscape Ecology",
+      "Population Ecology",
+      "Behavioral Ecology"
+    ],
+    "answerIndex": 0,
+    "explanation": "Asked in TGPSC AEE (09 May 2023, Q.15): Microbial Ecology (or cellular/molecular ecology) studies microorganisms (bacteria, archaea, viruses, fungi) at the smallest cellular level and their ecological interactions.",
+    "smartTip": "Hierarchy of Ecology: Microbial/Cellular → Organismal → Population → Community → Ecosystem → Landscape → Biosphere."
+  },
+  {
+    "id": 35,
+    "exam": "TGPSC",
+    "sourceTag": "TGPSC AEE 09 May 2023",
+    "subject": "Environment & Disaster",
+    "question": "Read the following statements about Deforestation: (A) The deliberate clearance of forested terrain is known as deforestation. (B) To make room for agriculture, animal grazing, and to obtain wood for building, manufacture, and fuel, forests have been cleared. Identify the correct option:",
+    "options": [
+      "Only A is correct",
+      "Only B is correct",
+      "Both A and B are correct",
+      "Neither A nor B is correct"
+    ],
+    "answerIndex": 2,
+    "explanation": "Asked in TGPSC AEE (09 May 2023, Q.23): Both statements A and B accurately define deforestation and its primary human-driven agricultural and industrial causes.",
+    "smartTip": "In TGPSC Paper-I, always check whether the question asks for 'CORRECT' or 'INCORRECT' statements at the very last line!"
+  },
+  {
+    "id": 36,
+    "exam": "TGPSC",
+    "sourceTag": "TGPSC AEE 09 May 2023",
+    "subject": "Environment & Disaster",
+    "question": "Read the statements on Remote Sensing in Disaster Management: (A) GIS is utilized at the disaster preventive stage to manage massive amounts of data needed for hazard assessment. (B) In the aftermath of a disaster, GIS combined with GPS is very helpful for search and rescue efforts in severely damaged places. Which statement(s) is/are INCORRECT?",
+    "options": [
+      "Only A is incorrect",
+      "Only B is incorrect",
+      "Both A and B are incorrect",
+      "Neither A nor B is incorrect (Both are correct)"
+    ],
+    "answerIndex": 3,
+    "explanation": "Asked in TGPSC AEE (09 May 2023, Q.7): Both statements A and B are factually true! Because the question asks which statement is INCORRECT, the right answer is 'Neither A nor B is incorrect'.",
+    "smartTip": "Classic TGPSC trap: Both statements are true, and the prompt asks 'Which is INCORRECT?' → Pick 'Neither A nor B'!"
+  },
+  {
+    "id": 37,
+    "exam": "TGPSC",
+    "sourceTag": "TGPSC AEE 09 May 2023",
+    "subject": "Environment & Disaster",
+    "question": "Read the following statements about Disaster Management: (A) Efforts at mitigation and prevention are intended to lessen the potential harm and suffering that catastrophes may bring about. (B) Actions that can worsen a disaster's effects are particularly referred to as mitigation. Identify the INCORRECT statement:",
+    "options": [
+      "Only A",
+      "Only B",
+      "Both A and B",
+      "Neither A nor B"
+    ],
+    "answerIndex": 1,
+    "explanation": "Asked in TGPSC AEE (09 May 2023, Q.20): Statement B is clearly false because 'mitigation' refers to structural and non-structural measures taken to REDUCE or minimize the severity of a disaster, not worsen it.",
+    "smartTip": "Disaster Cycle: Prevention & Mitigation (Pre-disaster) → Preparedness → Response (During) → Recovery & Reconstruction (Post)."
+  },
+  {
+    "id": 38,
+    "exam": "TGPSC",
+    "sourceTag": "TGPSC AE 19 Oct 2023",
+    "subject": "Environment & Disaster",
+    "question": "As per the final report of the High Powered Committee on Disaster Management, which of the following is/are categorized under 'Geologically Related Hazards'? (I) Droughts (II) Earthquakes",
+    "options": [
+      "Neither I nor II",
+      "Both I and II",
+      "Only II (Earthquakes)",
+      "Only I (Droughts)"
+    ],
+    "answerIndex": 2,
+    "explanation": "Asked in TGPSC AE (19 Oct 2023, Q.8): The High Powered Committee (HPC) classified disasters into 5 sub-groups. Earthquakes, landslides, and dam bursts fall under 'Geologically Related Hazards', whereas Droughts, cyclones, and floods fall under 'Water and Climate Related Hazards'.",
+    "smartTip": "HPC 5 Categories: (1) Water & Climate, (2) Geological, (3) Chemical/Industrial/Nuclear, (4) Accident-related, (5) Biological."
+  },
+  {
+    "id": 39,
+    "exam": "TGPSC",
+    "sourceTag": "TGPSC AEE 22 May 2023",
+    "subject": "Environment & Disaster",
+    "question": "In January 2023, which major geological/environmental problem came to light at Joshimath in Uttarakhand, India?",
+    "options": [
+      "Volcanic eruption",
+      "Land subsidence and structural cracks in buildings",
+      "Tsunami inundation",
+      "Desertification"
+    ],
+    "answerIndex": 1,
+    "explanation": "Asked in TGPSC AEE (22 May 2023, Q.56): Joshimath (Chamoli district, Uttarakhand), built on ancient landslide debris, suffered severe land subsidence (gradual sinking of the Earth's surface), causing deep cracks in over 800 buildings.",
+    "smartTip": "Joshimath sits in Seismic Zone V on loose glacial/landslide moraine deposits."
+  },
+  {
+    "id": 40,
+    "exam": "TGPSC",
+    "sourceTag": "TGPSC AEE 09 May 2023",
+    "subject": "Environment & Disaster",
+    "question": "How many states of India were identified as among the top 50 most vulnerable regions in the world to climate risks as per the Cross Dependency Initiative (XDI) report on 'Gross Domestic Climate Risk'?",
+    "options": [
+      "9",
+      "3",
+      "15",
+      "21"
+    ],
+    "answerIndex": 0,
+    "explanation": "Asked in TGPSC AEE (09 May 2023, Q.3): Nine (9) Indian states (including Bihar, UP, Assam, Rajasthan, Tamil Nadu, Maharashtra, Gujarat, Punjab, and Kerala) were placed in the top 50 regions globally at risk of climate damage to built infrastructure.",
+    "smartTip": "China, India (9 states), and the US had the highest number of states/provinces in XDI's Top 100 vulnerability index."
+  },
+  {
+    "id": 41,
+    "exam": "TGPSC",
+    "sourceTag": "TGPSC AEE May 2023 & AE Oct 2023",
+    "subject": "Telangana Special",
+    "question": "Consider the following regarding the Gentlemen's Agreement (Feb 20, 1956): (1) It was signed between Andhra and Telangana leaders including Bezawada Gopala Reddy, Burgula Ramakrishna Rao, and Konda Venkata Ranga Reddy. (2) Tanguturi Prakasam Pantulu was NOT a signatory. (3) It led to Mulki safeguards for Telangana people in government employment. Which are correct?",
+    "options": [
+      "1 and 2 only",
+      "2 and 3 only",
+      "1 and 3 only",
+      "1, 2, and 3"
+    ],
+    "answerIndex": 3,
+    "explanation": "Tested across TGPSC AEE (09 May 2023) and AE (19 Oct 2023): All three statements are correct. Signed at Hyderabad House in New Delhi on Feb 20, 1956, it had 4 signatories from Andhra (B. Gopala Reddy, N. Sanjiva Reddy, G. Latchanna, A. Satyanarayana Raju) and 4 from Telangana (B. Ramakrishna Rao, K.V. Ranga Reddy, M. Chenna Reddy, J.V. Narsing Rao).",
+    "smartTip": "Memorize all 8 signatories of the 1956 Gentlemen's Agreement—TGPSC asks 'Who among the following was NOT a signatory?' in almost every exam!"
+  },
+  {
+    "id": 42,
+    "exam": "TGPSC",
+    "sourceTag": "TGPSC AEE 09 May 2023",
+    "subject": "Telangana Special",
+    "question": "Which dynasty's rule in Telangana led to the evolution and patronage of vigorous martial dance forms such as 'Perini Sivatandavam'?",
+    "options": [
+      "Kakatiya Dynasty",
+      "Asaf Jahi Dynasty",
+      "Qutb Shahi Dynasty",
+      "Maurya Dynasty"
+    ],
+    "answerIndex": 0,
+    "explanation": "Asked in TGPSC AEE (09 May 2023, Q.24): Perini Sivatandavam ('Dance of Warriors') flourished under the Kakatiya dynasty (and was documented by Jayapa Senani in his Sanskrit treatise 'Nrittaratnavali'). It was revived in modern times by Padma Shri Dr. Nataraja Ramakrishna.",
+    "smartTip": "Perini Sivatandavam → Kakatiyas → Jayapa Senani ('Nrittaratnavali') → Revived by Dr. Nataraja Ramakrishna."
+  },
+  {
+    "id": 43,
+    "exam": "TGPSC",
+    "sourceTag": "TGPSC AEE 09 May 2023",
+    "subject": "Telangana Special",
+    "question": "In how many categories did the state of Telangana win National Tourism Awards given on the occasion of World Tourism Day celebrations held in New Delhi on September 21, 2022?",
+    "options": [
+      "Three",
+      "One",
+      "Five",
+      "Seven"
+    ],
+    "answerIndex": 0,
+    "explanation": "Asked in TGPSC AEE (09 May 2023, Q.4): Telangana won Three (3) National Tourism Awards (Best Standalone Convention Centre for HICC, Best Golf Course for Hyderabad Golf Association, and Best Civic Management of a Tourist Destination for Secunderabad Cantonment).",
+    "smartTip": "Also remember: UNESCO inscribed Ramappa Temple (Palampet, Mulugu) as Telangana's 1st World Heritage Site in July 2021!"
+  },
+  {
+    "id": 44,
+    "exam": "TGPSC",
+    "sourceTag": "TGPSC AEE 22 May 2023",
+    "subject": "Telangana Special",
+    "question": "With respect to power and energy in Telangana state: (I) Telangana state has the third-largest state-owned power utility in the country (TSGENCO/TGGENCO) with baseline installed capacity of 4365.30 MW. (II) The State has 60 power generating projects out of which 15 are conventional and the rest non-conventional. Which option is correct?",
+    "options": [
+      "Only Statement I is correct",
+      "Only Statement II is correct",
+      "Both Statement I and II are correct",
+      "Both Statement I and II are incorrect"
+    ],
+    "answerIndex": 0,
+    "explanation": "Asked in TGPSC AEE (22 May 2023): Only Statement I is correct as per official Telangana State Portal data at baseline. Statement II is a fabricated statistical distractor.",
+    "smartTip": "Telangana's 4 unbundled power utilities: TGGENCO (Generation), TGTRANSCO (Transmission), TGSPDCL (Southern Discom, HQ Hyderabad), and TGNPDCL (Northern Discom, HQ Warangal)."
+  },
+  {
+    "id": 45,
+    "exam": "TGPSC",
+    "sourceTag": "TGPSC AE 19 Oct 2023",
+    "subject": "Telangana Special",
+    "question": "As per Census 2011, the rural population of Telangana constitutes what percentage of the total population of the state?",
+    "options": [
+      "36.12%",
+      "38.88%",
+      "63.88%",
+      "61.12%"
+    ],
+    "answerIndex": 3,
+    "explanation": "Asked in TGPSC AE (19 Oct 2023, Q.3): As per the 2011 Census, the rural population of Telangana is 61.12% of the total population, while the urban population is 38.88%.",
+    "smartTip": "Watch out for the swap trap: Rural = 61.12%, Urban = 38.88% (61.12 + 38.88 = 100%)."
+  },
+  {
+    "id": 46,
+    "exam": "TGPSC",
+    "sourceTag": "TGPSC AEE 22 May 2023",
+    "subject": "Telangana Special",
+    "question": "In which district region of Telangana are the famous Kuntala and Pochera waterfalls, as well as the tribal Self-Respect (Atma Gaurava) festival Nagoba Jatara, located?",
+    "options": [
+      "Adilabad region",
+      "Nalgonda",
+      "Mahabubnagar",
+      "Khammam"
+    ],
+    "answerIndex": 0,
+    "explanation": "Kuntala (the highest waterfall in Telangana at ~45 meters on the Kadam river) and Pochera waterfalls, along with the Gond Mesram clan tribal festival Nagoba Jatara at Keslapur, are located in the Adilabad district region.",
+    "smartTip": "Kuntala & Pochera Waterfalls + Keslapur Nagoba Jatara = Adilabad region; Bogatha Waterfall = Mulugu district."
+  },
+  {
+    "id": 47,
+    "exam": "TGPSC",
+    "sourceTag": "TGPSC AEE & AE 2023",
+    "subject": "Polity, Economy & History",
+    "question": "Match the Indian Constitutional provisions: (1) Citizenship is in Part II. (2) Rural Local Governments (Panchayats) were constitutionalized by the 73rd Amendment Act. (3) Part IX-A (Municipalities) was included by the 74th Amendment Act. Which are correct?",
+    "options": [
+      "1 and 2 only",
+      "2 and 3 only",
+      "1 and 3 only",
+      "1, 2, and 3"
+    ],
+    "answerIndex": 3,
+    "explanation": "Tested across TGPSC AEE (09 May & 21 May 2023) and AE (19 Oct 2023): All three are correct. Part II (Articles 5–11) covers Citizenship, the 73rd Amendment Act (1992) enacted Part IX (Panchayats, 11th Schedule), and the 74th Amendment Act (1992) enacted Part IX-A (Municipalities, 12th Schedule).",
+    "smartTip": "Part IX = Panchayats (73rd Amendment, 29 subjects in 11th Schedule); Part IX-A = Municipalities (74th Amendment, 18 subjects in 12th Schedule)."
+  },
+  {
+    "id": 48,
+    "exam": "TGPSC",
+    "sourceTag": "TGPSC AE 19 Oct 2023",
+    "subject": "Polity, Economy & History",
+    "question": "Between (I) Forests and (II) Defence, which subject is included in the Union List of the Indian Constitution, and who acts as the ex-officio Chairman of the Rajya Sabha?",
+    "options": [
+      "Only II (Defence) is in the Union List; Vice-President is ex-officio Chairman of Rajya Sabha",
+      "Both I and II are in the Union List; President is ex-officio Chairman",
+      "Only I (Forests) is in the Union List; Prime Minister is ex-officio Chairman",
+      "Neither I nor II is in the Union List; Speaker is ex-officio Chairman"
+    ],
+    "answerIndex": 0,
+    "explanation": "Asked in TGPSC AE (19 Oct 2023, Q.6 & Q.16): Only Defence (II) is in the Union List; Forests (I) were moved from the State List to the Concurrent List by the 42nd Constitutional Amendment Act (1976). Under Article 64, the Vice-President of India acts as the ex-officio Chairman of the Rajya Sabha.",
+    "smartTip": "42nd Amendment (1976) moved 5 subjects from State List to Concurrent List: Education, Forests, Weights & Measures, Protection of Wild Animals & Birds, and Administration of Justice."
+  },
+  {
+    "id": 49,
+    "exam": "TGPSC",
+    "sourceTag": "TGPSC AEE 21 May 2023",
+    "subject": "Polity, Economy & History",
+    "question": "Who gave the idea in 'The General Theory of Employment, Interest and Money' that government fiscal policy should be used to stabilize the level of output and employment?",
+    "options": [
+      "John Maynard Keynes",
+      "Adam Smith",
+      "Milton Friedman",
+      "Karl Marx"
+    ],
+    "answerIndex": 0,
+    "explanation": "Asked in TGPSC AEE (21 May 2023, Q.4): British economist John Maynard Keynes advocated counter-cyclical government fiscal intervention in his 1936 book 'The General Theory of Employment, Interest and Money' to combat economic depressions.",
+    "smartTip": "Keynes = 1936 'General Theory' (Fiscal Policy Stabilization); Adam Smith = 1776 'Wealth of Nations' (Invisible Hand / Laissez-faire)."
+  },
+  {
+    "id": 50,
+    "exam": "TGPSC",
+    "sourceTag": "TGPSC AEE 21 May 2023",
+    "subject": "Polity, Economy & History",
+    "question": "In public finance accounting, which formula correctly defines Fiscal Deficit?",
+    "options": [
+      "Total expenditure + (Revenue receipts - Non-debt creating receipts)",
+      "Total expenditure - (Revenue receipts - Non-debt creating receipts)",
+      "Total expenditure - (Revenue receipts + Non-debt creating capital receipts)",
+      "Revenue expenditure - Revenue receipts"
+    ],
+    "answerIndex": 2,
+    "explanation": "Asked in TGPSC AEE (21 May 2023, Q.8): Fiscal Deficit = Total Expenditure - (Revenue Receipts + Non-Debt Creating Capital Receipts). It represents the total borrowing requirement of the government from all sources.",
+    "smartTip": "Primary Deficit = Fiscal Deficit - Interest Payments on previous borrowings."
+  },
+  {
+    "id": 51,
+    "exam": "TGPSC",
+    "sourceTag": "TGPSC AE 19 Oct 2023",
+    "subject": "Polity, Economy & History",
+    "question": "Consider the following statements: (I) In a capitalist society, only those consumer goods are produced that are in demand, and goods are distributed on the basis of Purchasing Power. (II) Government bonds are issued with an original maturity of one year or more. Which is/are correct?",
+    "options": [
+      "Only I",
+      "Only II",
+      "Both I and II",
+      "Neither I nor II"
+    ],
+    "answerIndex": 2,
+    "explanation": "Asked in TGPSC AE (19 Oct 2023, Q.5 & Q.11): Both I and II are correct. In a market/capitalist economy (NCERT Class XII Macroeconomics), goods are distributed according to purchasing power. Government dated securities/bonds have an original maturity of 1 year or more (unlike Treasury Bills, which mature in less than 1 year).",
+    "smartTip": "Money Market (T-Bills) = Maturity less than 1 year; Capital Market (Government Bonds / Dated Securities) = Maturity of 1 year or more."
+  },
+  {
+    "id": 52,
+    "exam": "TGPSC",
+    "sourceTag": "TGPSC AEE GK",
+    "subject": "Polity, Economy & History",
+    "question": "What does 'Devaluation of a currency' mean, and which institution launched India's first Municipal Bond Index?",
+    "options": [
+      "Reduction in the value of a currency vis-à-vis major internationally traded currencies; National Stock Exchange (NSE)",
+      "Allowing a currency to float freely without central bank intervention; Bombay Stock Exchange (BSE)",
+      "Demonetizing high-denomination banknotes; Reserve Bank of India (RBI)",
+      "Reducing domestic inflation rates; NITI Aayog"
+    ],
+    "answerIndex": 0,
+    "explanation": "Devaluation is the official reduction in the external value of a domestic currency relative to major foreign currencies under a fixed/managed regime (making exports cheaper and imports dearer). NSE Indices Limited launched India's first Municipal Bond Index (Nifty India Municipal Bond Index).",
+    "smartTip": "Devaluation boosts exports and curbs imports, helping narrow a Current Account Deficit."
+  },
+  {
+    "id": 53,
+    "exam": "TGPSC",
+    "sourceTag": "TGPSC AEE & AE 2023",
+    "subject": "Polity, Economy & History",
+    "question": "Verify the following Modern Indian History facts tested by TGPSC: (1) Sirajuddaulah was the Nawab of Bengal during the Battle of Plassey (1757). (2) The Non-Cooperation and Khilafat Movement began in January 1921. (3) The Resolution of 'Poorna Swaraj' was passed in 1929. Which are correct?",
+    "options": [
+      "1 and 2 only",
+      "1 and 3 only",
+      "2 and 3 only",
+      "1, 2, and 3"
+    ],
+    "answerIndex": 3,
+    "explanation": "Tested in TGPSC AEE (09 May & 21 May 2023) and AE (19 Oct 2023): All three are correct. Note that 'January 1921' for the start of the Non-Cooperation-Khilafat Movement is taken verbatim from NCERT Class X History (Chapter 2: Nationalism in India).",
+    "smartTip": "TGPSC lifts history and biology statements word-for-word from NCERT Class X, XI, and XII chapters!"
+  },
+  {
+    "id": 54,
+    "exam": "TGPSC",
+    "sourceTag": "TGPSC AEE & AE 2023",
+    "subject": "Science & Hydrology",
+    "question": "Which of the following statements regarding Mycoplasma is/are correct? (I) They completely lack a cell wall. (II) They are the smallest living cells known and can survive without oxygen.",
+    "options": [
+      "Neither I nor II",
+      "Only I",
+      "Both I and II",
+      "Only II"
+    ],
+    "answerIndex": 2,
+    "explanation": "Asked in TGPSC AE (19 Oct 2023, Q.7) verbatim from NCERT Class XI Biology (Chapter 2): Both I and II are correct. Mycoplasma (PPLO) completely lack a cell wall (making them naturally resistant to penicillin/beta-lactam antibiotics) and can survive without oxygen.",
+    "smartTip": "Mycoplasma = 'Jokers of the Plant/Microbial Kingdom' because they lack a rigid cell wall and can change shape (pleomorphic)."
+  },
+  {
+    "id": 55,
+    "exam": "TGPSC",
+    "sourceTag": "TGPSC AE 19 Oct 2023",
+    "subject": "Science & Hydrology",
+    "question": "Which launch vehicle successfully launched ISRO's Chandrayaan-3 into orbit, and in which year was the farmer problem-solving interface 'e-Krishi Samvad' launched?",
+    "options": [
+      "LVM3-M4; 2017",
+      "PSLV-C48; 2015",
+      "GSLV Mk II; 2019",
+      "PSLV-C57; 2021"
+    ],
+    "answerIndex": 0,
+    "explanation": "Asked in TGPSC AE (19 Oct 2023, Q.10 & Q.14): LVM3-M4 (Launch Vehicle Mark-3, formerly GSLV Mk-III) launched Chandrayaan-3 on July 14, 2023 (whereas PSLV-C57 launched the Aditya-L1 solar mission). ICAR's 'e-Krishi Samvad' interface was launched in 2017.",
+    "smartTip": "ISRO Launch Vehicle Match: Chandrayaan-3 → LVM3-M4; Aditya-L1 → PSLV-C57; XPoSat → PSLV-C58."
+  },
+  {
+    "id": 56,
+    "exam": "TGPSC",
+    "sourceTag": "TGPSC AEE 22 May 2023",
+    "subject": "Science & Hydrology",
+    "question": "Match the meteorological/hydrological instruments with their exact use: (I) Pluviometer (II) Lysimeter (III) Atmometer. Uses: (1) Evapotranspiration (2) Evaporation (3) Rainfall depth.",
+    "options": [
+      "I-1, II-3, III-2",
+      "I-2, II-1, III-3",
+      "I-3, II-1, III-2",
+      "I-3, II-2, III-1"
+    ],
+    "answerIndex": 2,
+    "explanation": "Asked in TGPSC AEE (22 May 2023): Pluviometer (ombrometer/rain gauge) measures Rainfall depth (I-3); Lysimeter measures actual Evapotranspiration by monitoring soil-water percolation (II-1); Atmometer (evaporimeter) measures the rate of Evaporation from a wet surface (III-2).",
+    "smartTip": "Quick Match: Pluvio = Rain; Lysi = Evapotranspiration; Atmo = Evaporation; Anemo = Wind Speed; Pyranometer = Solar Radiation."
+  },
+  {
+    "id": 57,
+    "exam": "TGPSC",
+    "sourceTag": "TGPSC AEE 21 May 2023",
+    "subject": "Aptitude & English",
+    "question": "In a certain code language, VERBAL is coded as REVLAB. Which of the following pairs of Word : Code are correct on the basis of the same rule? (I) RELATE : LERETA (II) BASINT : TNISAB (III) COLOUR : LOCRUO",
+    "options": [
+      "Only I and II",
+      "Only II and III",
+      "I, II, and III",
+      "Only I and III"
+    ],
+    "answerIndex": 3,
+    "explanation": "Asked in TGPSC AEE (21 May 2023, Q.5): The 6-letter word is split into two 3-letter halves, and each half is reversed independently: VER -> REV and BAL -> LAB. Thus, RELATE -> LER + ETA = LERETA (I is correct), BASINT -> SAB + TNI = SABTNI (so II's TNISAB is wrong), and COLOUR -> LOC + RUO = LOCRUO (III is correct).",
+    "smartTip": "Always check whether a 6-letter reversal is a full-string reversal (6→1) or a bipartite half reversal (3→1, 6→4)!",
+    "smartCmd": "split reverse VERBAL RELATE BASINT COLOUR"
+  },
+  {
+    "id": 58,
+    "exam": "TGPSC",
+    "sourceTag": "TGPSC AEE 09 May 2023",
+    "subject": "Aptitude & English",
+    "question": "Daksh, Nayan, Umang, Likith, and Oman are standing in a row facing North. Nayan is to the immediate right of Daksh, who is at one end. Oman is to the immediate left of Likith, who is NOT at the end. Which statement is true?",
+    "options": [
+      "Oman is standing to the immediate right of Nayan.",
+      "Likith is standing at the extreme right end.",
+      "Daksh is standing at the extreme right end.",
+      "Umang is standing between Daksh and Nayan."
+    ],
+    "answerIndex": 0,
+    "explanation": "Asked in TGPSC AEE (09 May 2023, Q.31): Facing North, since Nayan is to the right of Daksh and Daksh is at an end, Daksh must be at Position 1 (Left End) and Nayan at Position 2. Since Oman is left of Likith and Likith is not at Position 5, Oman is at Position 3, Likith at Position 4, and Umang at Position 5. Thus, Oman is immediately to the right of Nayan.",
+    "smartTip": "Tap 'Auto-Solve Q' inside the Smart Solver drawer to visualize the 5-Seat North Row arrangement interactively!"
+  },
+  {
+    "id": 59,
+    "exam": "TGPSC",
+    "sourceTag": "TGPSC AEE & AE 2023",
+    "subject": "Aptitude & English",
+    "question": "Verify the three English answers from TGPSC 2023: (1) Passive of 'I had washed all the windowpanes before the rain' is 'All the windowpanes had been washed before the rain.' (2) 'This was a ___ disguised swimming pool' takes the adverb 'cleverly'. (3) The synonym of 'Lackluster' is 'Sombre'.",
+    "options": [
+      "All three (1, 2, and 3) are correct",
+      "Only 1 and 2 are correct",
+      "Only 2 and 3 are correct",
+      "Only 1 is correct"
+    ],
+    "answerIndex": 0,
+    "explanation": "Tested in TGPSC AEE (21 May 2023) and AE (19 Oct 2023): Past perfect active ('had + V3') converts to 'had been + V3' in passive voice. Modifying the participle 'disguised' requires the adverb 'cleverly'. 'Lackluster' (dull, lacking sheen) matches 'Sombre' (whereas Incandescent and Radiant are antonyms).",
+    "smartTip": "Rule of Modifiers: Adverb ('cleverly') modifies an Adjective/Participle ('disguised'), which in turn modifies the Noun ('swimming pool')."
+  },
+  {
+    "id": 60,
+    "exam": "EE Bonus",
+    "sourceTag": "Electrical Core Rapid Revision",
+    "subject": "Electrical Core",
+    "question": "Verify these 5 Core Electrical Engineering principles: (1) KCL is based on conservation of charge. (2) At series RLC resonance (XL = XC), impedance is minimum (Z = R). (3) In a balanced 3-phase star system, VL = √3 Vph. (4) Transformer max efficiency occurs when Copper Loss = Iron Loss. (5) Max DC power transfer occurs when RL = Rth.",
+    "options": [
+      "All 5 principles are correct",
+      "Only 1, 2, and 4 are correct",
+      "Only 2, 3, and 5 are correct",
+      "Only 1 and 5 are correct"
+    ],
+    "answerIndex": 0,
+    "explanation": "All 5 high-frequency Electrical Engineering rules are correct: KCL conserves electric charge (while KVL conserves energy); series RLC resonance cancels reactive components leaving minimum impedance Z = R and unity power factor; star-connected line voltage is √3 times phase voltage; transformer efficiency peaks when variable copper loss (I²R) equals constant core/iron loss (Wi); and DC maximum power transfer occurs when load resistance equals Thevenin resistance (RL = Rth).",
+    "smartTip": "For AC circuits with complex impedance Zth = Rth + jXth, Maximum Power Transfer occurs when ZL = Zth* = Rth - jXth (complex conjugate)!"
+  }
+]
